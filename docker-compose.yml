@@ -1,0 +1,23 @@
+services:
+  oracle:
+    build: ./oracle
+    image: container-registry.oracle.com/database/express:21.3.0-xe
+    container_name: oracle-xe-new
+    ports:
+      - "1521:1521"
+      - "5500:5500"
+    environment:
+      ORACLE_PWD: password123
+      ORACLE_CHARACTERSET: AL32UTF8
+      ORACLE_PDB: XEPDB1
+    volumes:
+      - oracle_data:/opt/oracle/oradata
+    networks:
+      - network
+volumes:
+  oracle_data:
+    external: true
+
+networks:
+  network:
+    driver: bridge
