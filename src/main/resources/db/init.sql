@@ -13,7 +13,10 @@ CREATE TABLE Users
     USR_street            VARCHAR2(255),
     USR_city              VARCHAR2(100),
     USR_zip_code          VARCHAR2(20),
-    CT_id                 NUMBER
+    CT_id                 NUMBER,
+
+    FOREIGN KEY (UR_id) REFERENCES Users (UR_id),
+    FOREIGN KEY (CT_id) REFERENCES Countries (CT_id)
 );
 
 
@@ -59,10 +62,13 @@ CREATE TABLE Payments
 (
     PMT_id     NUMBER DEFAULT payment_seq.nextval PRIMARY KEY,
     PMT_amount NUMBER(10, 2) NOT NULL CHECK (PMT_amount > 0),
-    PMT_method VARCHAR2(20)  NOT NULL CHECK (PMT_method IN ('CARD', 'TRANSFER', 'CASH')), --- 5,6 do slownikowej
-    PMT_status VARCHAR2(20)  NOT NULL CHECK (PMT_status IN ('PENDING', 'PAID', 'FAILED', 'REFUNDED')),
+    PMTM_id    NUMBER        NOT NULL,
+    PMTS_id    NUMBER        NOT NULL,
     PMT_date   DATE   DEFAULT SYSDATE,
-    USR_id     NUMBER        NOT NULL
+    USR_id     NUMBER        NOT NULL,
+
+    FOREIGN KEY (PMTM_id) REFERENCES Payment_Methods (PMTM_id),
+    FOREIGN KEY (PMTS_id) REFERENCES Payment_Statuses (PMTS_id)
 );
 
 CREATE SEQUENCE payment_method_seq START WITH 1 INCREMENT BY 1 NOCACHE NOCYCLE;
