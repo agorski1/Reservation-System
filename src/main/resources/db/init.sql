@@ -18,7 +18,7 @@ CREATE TABLE Users
     FOREIGN KEY (UR_id) REFERENCES Users (UR_id),
     FOREIGN KEY (CT_id) REFERENCES Countries (CT_id)
 );
-
+---od usr_number ukryc
 
 CREATE SEQUENCE user_role_seq START WITH 1 INCREMENT BY 1 NOCACHE NOCYCLE;
 
@@ -54,7 +54,7 @@ INSERT INTO Countries(CT_name)
 VALUES ('Spain');
 INSERT INTO Countries(CT_name)
 VALUES ('Italy');
-
+--- table
 
 CREATE SEQUENCE payment_seq START WITH 1 INCREMENT BY 1 NOCACHE NOCYCLE;
 
@@ -120,21 +120,33 @@ CREATE TABLE Reservations
     FOREIGN KEY (USR_id) REFERENCES Users (USR_id),
     FOREIGN KEY (PMT_id) REFERENCES Payments (PMT_id)
 );
-
+--- count i payment wyrzucic
 
 CREATE SEQUENCE room_seq START WITH 1 INCREMENT BY 1 NOCACHE NOCYCLE;
 
 CREATE TABLE Rooms
 (
-    RM_id              NUMBER DEFAULT room_seq.nextval PRIMARY KEY,
+    RM_id              NUMBER  DEFAULT room_seq.nextval PRIMARY KEY,
     RM_number          NUMBER(4)     NOT NULL UNIQUE,
-    RM_type            VARCHAR2(15)  NOT NULL CHECK (RM_type IN ('ECONOMY', 'STANDARD', 'DELUXE', 'EXCLUSIVE')),
+    RT_id              NUMBER,
+    RM_is_deleted      CHAR(1) DEFAULT 'N' CHECK ( RM_is_deleted IN ('N', 'Y')),
     RM_price_per_night NUMBER(10, 2) NOT NULL CHECK (RM_price_per_night >= 0),
-    RM_capacity        NUMBER(2)     NOT NULL CHECK (RM_capacity > 0)
+    RM_capacity        NUMBER(2)     NOT NULL CHECK (RM_capacity > 0),
+    FOREIGN KEY (RT_id) REFERENCES Room_type(RT_id)
+);
+--- capacity price per night
+CREATE SEQUENCE room_type_seq START WITH 1 INCREMENT BY 1 NOCACHE NOCYCLE;
+
+CREATE TABLE Room_type
+(
+    RT_id   NUMBER DEFAULT room_type_seq.nextval PRIMARY KEY,
+    RT_name VARCHAR2(20) NOT NULL
 );
 
+INSERT INTO Room_type(RT_name) VALUES ('EXCLUSIVE');
+INSERT INTO Room_type(RT_name) VALUES ('STANDARD');
 
---- wyciagnac do tabeli rm_type, dodac flage do usuwania pokoi
+
 CREATE SEQUENCE room_amenity_seq START WITH 1 INCREMENT BY 1 NOCACHE NOCYCLE;
 
 CREATE TABLE Room_Amenities
