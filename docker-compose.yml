@@ -12,7 +12,6 @@ services:
       ORACLE_PDB: XEPDB1
     volumes:
       - oracle_data:/opt/oracle/oradata   # rs
-#      - oracle_data2:/opt/oracle/oradata  # hd
     networks:
       - network
 volumes:

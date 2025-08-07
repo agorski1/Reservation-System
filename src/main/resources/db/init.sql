@@ -1,4 +1,28 @@
+CREATE SEQUENCE user_role_seq START WITH 1 INCREMENT BY 1 NOCACHE NOCYCLE;
+CREATE SEQUENCE country_seq START WITH 1 INCREMENT BY 1 NOCACHE NOCYCLE;
 CREATE SEQUENCE user_seq START WITH 1 INCREMENT BY 1 NOCACHE NOCYCLE;
+CREATE SEQUENCE payment_method_seq START WITH 1 INCREMENT BY 1 NOCACHE NOCYCLE;
+CREATE SEQUENCE payment_status_seq START WITH 1 INCREMENT BY 1 NOCACHE NOCYCLE;
+CREATE SEQUENCE payment_seq START WITH 1 INCREMENT BY 1 NOCACHE NOCYCLE;
+CREATE SEQUENCE reservation_seq START WITH 1 INCREMENT BY 1 NOCACHE NOCYCLE;
+CREATE SEQUENCE room_seq START WITH 1 INCREMENT BY 1 NOCACHE NOCYCLE;
+CREATE SEQUENCE room_type_seq START WITH 1 INCREMENT BY 1 NOCACHE NOCYCLE;
+CREATE SEQUENCE amenity_seq START WITH 1 INCREMENT BY 1 NOCACHE NOCYCLE;
+CREATE SEQUENCE room_amenity_seq START WITH 1 INCREMENT BY 1 NOCACHE NOCYCLE;
+
+CREATE TABLE User_Roles
+(
+    UR_id   NUMBER DEFAULT user_role_seq.nextval PRIMARY KEY,
+    UR_name VARCHAR2(20) UNIQUE NOT NULL
+);
+
+
+CREATE TABLE Countries
+(
+    CT_id   NUMBER DEFAULT country_seq.nextval PRIMARY KEY,
+    CT_name VARCHAR2(50) UNIQUE NOT NULL
+);
+
 
 CREATE TABLE Users
 (
@@ -7,36 +31,32 @@ CREATE TABLE Users
     USR_password          VARCHAR2(50)  NOT NULL,
     USR_first_name        VARCHAR2(100),
     USR_last_name         VARCHAR2(100),
-    UR_id                 VARCHAR2(10),
     USR_phone_number      VARCHAR2(20),
     USR_registration_date DATE   DEFAULT SYSDATE,
     USR_street            VARCHAR2(255),
     USR_city              VARCHAR2(100),
     USR_zip_code          VARCHAR2(20),
+    UR_id                 NUMBER,
     CT_id                 NUMBER,
-
     FOREIGN KEY (UR_id) REFERENCES User_Roles (UR_id),
     FOREIGN KEY (CT_id) REFERENCES Countries (CT_id)
-);
----od usr_number ukryc
+);---od usr_number ukryc
 
-CREATE SEQUENCE user_role_seq START WITH 1 INCREMENT BY 1 NOCACHE NOCYCLE;
 
-CREATE TABLE User_Roles
+
+CREATE TABLE Payment_Methods
 (
-    UR_id   NUMBER DEFAULT user_role_seq.nextval PRIMARY KEY,
-    UR_name VARCHAR2(20) UNIQUE NOT NULL
+    PMTM_id   NUMBER DEFAULT payment_method_seq.nextval PRIMARY KEY,
+    PMTM_name VARCHAR2(20) NOT NULL UNIQUE
 );
 
-CREATE SEQUENCE country_seq START WITH 1 INCREMENT BY 1 NOCACHE NOCYCLE;
 
-CREATE TABLE Countries
+CREATE TABLE Payment_Statuses
 (
-    CT_id   NUMBER DEFAULT country_seq.nextval PRIMARY KEY,
-    CT_name VARCHAR2(50) UNIQUE NOT NULL
+    PMTS_id   NUMBER DEFAULT payment_status_seq.nextval PRIMARY KEY,
+    PMTS_name VARCHAR2(20) NOT NULL UNIQUE
 );
 
-CREATE SEQUENCE payment_seq START WITH 1 INCREMENT BY 1 NOCACHE NOCYCLE;
 
 CREATE TABLE Payments
 (
@@ -51,23 +71,42 @@ CREATE TABLE Payments
     FOREIGN KEY (PMTS_id) REFERENCES Payment_Statuses (PMTS_id)
 );
 
-CREATE SEQUENCE payment_method_seq START WITH 1 INCREMENT BY 1 NOCACHE NOCYCLE;
 
-CREATE TABLE Payment_Methods
+CREATE TABLE Room_type
 (
-    PMTM_id   NUMBER DEFAULT payment_method_seq.nextval PRIMARY KEY,
-    PMTM_name VARCHAR2(20) NOT NULL UNIQUE
+    RT_id   NUMBER DEFAULT room_type_seq.nextval PRIMARY KEY,
+    RT_name VARCHAR2(20) NOT NULL
 );
 
-CREATE SEQUENCE payment_status_seq START WITH 1 INCREMENT BY 1 NOCACHE NOCYCLE;
 
-CREATE TABLE Payment_Statuses
+CREATE TABLE Rooms
 (
-    PMTS_id   NUMBER DEFAULT payment_status_seq.nextval PRIMARY KEY,
-    PMTS_name VARCHAR2(20) NOT NULL UNIQUE
+    RM_id              NUMBER  DEFAULT room_seq.nextval PRIMARY KEY,
+    RM_number          NUMBER(4) NOT NULL UNIQUE,
+    RM_is_deleted      CHAR(1) DEFAULT 'N' CHECK ( RM_is_deleted IN ('N', 'Y')),
+    RM_price_per_night NUMBER(10, 2) CHECK (RM_price_per_night >= 0),
+    RM_capacity        NUMBER(2) CHECK (RM_capacity > 0),
+    RT_id              NUMBER,
+    FOREIGN KEY (RT_id) REFERENCES Room_type (RT_id)
+);--- capacity price per night
+
+
+CREATE TABLE Amenities
+(
+    AMN_id   NUMBER DEFAULT amenity_seq.nextval PRIMARY KEY,
+    AMN_name VARCHAR2(50)        NOT NULL,
+    AMN_code VARCHAR2(20) UNIQUE NOT NULL
 );
 
-CREATE SEQUENCE reservation_seq START WITH 1 INCREMENT BY 1 NOCACHE NOCYCLE;
+
+CREATE TABLE Room_Amenities
+(
+    RA_id  NUMBER DEFAULT room_amenity_seq.nextval PRIMARY KEY,
+    RM_id  NUMBER NOT NULL,
+    AMN_id NUMBER NOT NULL,
+    FOREIGN KEY (RM_id) REFERENCES Rooms (RM_id),
+    FOREIGN KEY (AMN_id) REFERENCES Amenities (AMN_id)
+);
 
 CREATE TABLE Reservations
 (
@@ -81,47 +120,6 @@ CREATE TABLE Reservations
     FOREIGN KEY (RM_id) REFERENCES Rooms (RM_id),
     FOREIGN KEY (USR_id) REFERENCES Users (USR_id),
     FOREIGN KEY (PMT_id) REFERENCES Payments (PMT_id)
-);
---- count i payment wyrzucic
+);--- count i payment wyrzucic
 
-CREATE SEQUENCE room_seq START WITH 1 INCREMENT BY 1 NOCACHE NOCYCLE;
-
-CREATE TABLE Rooms
-(
-    RM_id              NUMBER  DEFAULT room_seq.nextval PRIMARY KEY,
-    RM_number          NUMBER(4) NOT NULL UNIQUE,
-    RM_is_deleted      CHAR(1) DEFAULT 'N' CHECK ( RM_is_deleted IN ('N', 'Y')),
-    RM_price_per_night NUMBER(10, 2) CHECK (RM_price_per_night >= 0),
-    RM_capacity        NUMBER(2) CHECK (RM_capacity > 0),
-    RT_id              NUMBER,
-    FOREIGN KEY (RT_id) REFERENCES Room_type (RT_id)
-);
---- capacity price per night
-CREATE SEQUENCE room_type_seq START WITH 1 INCREMENT BY 1 NOCACHE NOCYCLE;
-
-CREATE TABLE Room_type
-(
-    RT_id   NUMBER DEFAULT room_type_seq.nextval PRIMARY KEY,
-    RT_name VARCHAR2(20) NOT NULL
-);
-
-CREATE SEQUENCE room_amenity_seq START WITH 1 INCREMENT BY 1 NOCACHE NOCYCLE;
-
-CREATE TABLE Room_Amenities
-(
-    RA_id  NUMBER DEFAULT room_amenity_seq.nextval PRIMARY KEY,
-    RM_id  NUMBER NOT NULL,
-    AMN_id NUMBER NOT NULL,
-    FOREIGN KEY (RM_id) REFERENCES Rooms (RM_id),
-    FOREIGN KEY (AMN_id) REFERENCES Amenities (AMN_id)
-);
-
-CREATE SEQUENCE amenity_seq START WITH 1 INCREMENT BY 1 NOCACHE NOCYCLE;
-
-CREATE TABLE Amenities
-(
-    AMN_id   NUMBER DEFAULT amenity_seq.nextval PRIMARY KEY,
-    AMN_name VARCHAR2(50)        NOT NULL,
-    AMN_code VARCHAR2(20) UNIQUE NOT NULL
-);
-
+COMMIT;
