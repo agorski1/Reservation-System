@@ -15,7 +15,7 @@ import java.util.Set;
 @Setter
 @Entity
 @Table(name = "USERS")
-public class User {
+public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "USERS_id_gen")
     @SequenceGenerator(name = "USERS_id_gen", sequenceName = "USER_SEQ", allocationSize = 1)
@@ -53,14 +53,14 @@ public class User {
     @ManyToOne(fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.RESTRICT)
     @JoinColumn(name = "UR_ID")
-    private UserRole ur;
+    private UserRoleEntity ur;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.RESTRICT)
     @JoinColumn(name = "CT_ID")
-    private Country ct;
+    private CountryEntity ct;
 
     @OneToMany(mappedBy = "usr")
-    private Set<Reservation> reservations = new LinkedHashSet<>();
+    private Set<ReservationEntity> reservations = new LinkedHashSet<>();
 
 }

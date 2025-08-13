@@ -11,7 +11,7 @@ import java.util.Set;
 @Setter
 @Entity
 @Table(name = "COUNTRIES")
-public class Country {
+public class CountryEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "COUNTRIES_id_gen")
     @SequenceGenerator(name = "COUNTRIES_id_gen", sequenceName = "COUNTRY_SEQ", allocationSize = 1)
@@ -22,6 +22,6 @@ public class Country {
     private String ctName;
 
     @OneToMany(mappedBy = "ct")
-    private Set<User> users = new LinkedHashSet<>();
+    private Set<UserEntity> users = new LinkedHashSet<>();
 
 }

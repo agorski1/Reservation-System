@@ -73,7 +73,7 @@ CREATE TABLE Rooms
     RM_capacity        NUMBER(2) CHECK (RM_capacity > 0),
     RT_id              NUMBER,
     FOREIGN KEY (RT_id) REFERENCES Room_type (RT_id)
-);--- capacity price per night
+);
 
 
 CREATE TABLE Amenities
@@ -106,18 +106,20 @@ CREATE TABLE Reservations
     FOREIGN KEY (USR_id) REFERENCES Users (USR_id)
 );
 
-COMMIT;
 
 CREATE TABLE Payments
 (
-    PMT_id     NUMBER DEFAULT payment_seq.nextval PRIMARY KEY,
-    PMT_amount NUMBER(10, 2) NOT NULL CHECK (PMT_amount > 0),
-    PMT_date   DATE   DEFAULT SYSDATE,
-    PMT_account_number  VARCHAR2(34) CHECK ( PMT_account_number IS NULL OR  REGEXP_LIKE(PMT_account_number, '^[A-Z0-9]{15,34}$')),
-    RSV_id     NUMBER        NOT NULL,
-    PMTM_id    NUMBER        NOT NULL,
-    PMTS_id    NUMBER        NOT NULL,
+    PMT_id             NUMBER DEFAULT payment_seq.nextval PRIMARY KEY,
+    PMT_amount         NUMBER(10, 2) NOT NULL CHECK (PMT_amount > 0),
+    PMT_date           DATE   DEFAULT SYSDATE,
+    PMT_account_number VARCHAR2(34) CHECK ( PMT_account_number IS NULL OR
+                                            REGEXP_LIKE(PMT_account_number, '^[A-Z0-9]{15,34}$')),
+    RSV_id             NUMBER        NOT NULL,
+    PMTM_id            NUMBER        NOT NULL,
+    PMTS_id            NUMBER        NOT NULL,
     FOREIGN KEY (RSV_id) REFERENCES Reservations (RSV_id),
     FOREIGN KEY (PMTM_id) REFERENCES Payment_Methods (PMTM_id),
     FOREIGN KEY (PMTS_id) REFERENCES Payment_Statuses (PMTS_id)
 );
+
+COMMIT;

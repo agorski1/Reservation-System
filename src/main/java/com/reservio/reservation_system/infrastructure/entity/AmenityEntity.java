@@ -11,7 +11,7 @@ import java.util.Set;
 @Setter
 @Entity
 @Table(name = "AMENITIES")
-public class Amenity {
+public class AmenityEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "AMENITIES_id_gen")
     @SequenceGenerator(name = "AMENITIES_id_gen", sequenceName = "AMENITY_SEQ", allocationSize = 1)

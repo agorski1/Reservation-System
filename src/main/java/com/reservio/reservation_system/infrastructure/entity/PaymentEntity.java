@@ -14,7 +14,7 @@ import java.time.LocalDate;
 @Setter
 @Entity
 @Table(name = "PAYMENTS")
-public class Payment {
+public class PaymentEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "PAYMENTS_id_gen")
     @SequenceGenerator(name = "PAYMENTS_id_gen", sequenceName = "PAYMENT_SEQ", allocationSize = 1)
@@ -34,16 +34,16 @@ public class Payment {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.RESTRICT)
     @JoinColumn(name = "RSV_ID", nullable = false)
-    private Reservation rsv;
+    private ReservationEntity rsv;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.RESTRICT)
     @JoinColumn(name = "PMTM_ID", nullable = false)
-    private PaymentMethod pmtm;
+    private PaymentMethodEntity pmtm;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.RESTRICT)
     @JoinColumn(name = "PMTS_ID", nullable = false)
-    private PaymentStatus pmts;
+    private PaymentStatusEntity pmts;
 
 }

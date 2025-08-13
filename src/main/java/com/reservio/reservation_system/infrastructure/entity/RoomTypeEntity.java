@@ -8,7 +8,7 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "ROOM_TYPES")
-public class RoomType {
+public class RoomTypeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ROOM_TYPES_id_gen")
     @SequenceGenerator(name = "ROOM_TYPES_id_gen", sequenceName = "ROOM_TYPE_SEQ", allocationSize = 1)

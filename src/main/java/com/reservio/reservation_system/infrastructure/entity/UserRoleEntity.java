@@ -11,7 +11,7 @@ import java.util.Set;
 @Setter
 @Entity
 @Table(name = "USER_ROLES")
-public class UserRole {
+public class UserRoleEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "USER_ROLES_id_gen")
     @SequenceGenerator(name = "USER_ROLES_id_gen", sequenceName = "USER_ROLE_SEQ", allocationSize = 1)
@@ -22,6 +22,6 @@ public class UserRole {
     private String urName;
 
     @OneToMany(mappedBy = "ur")
-    private Set<User> users = new LinkedHashSet<>();
+    private Set<UserEntity> users = new LinkedHashSet<>();
 
 }

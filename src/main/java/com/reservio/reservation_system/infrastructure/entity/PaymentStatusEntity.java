@@ -11,7 +11,7 @@ import java.util.Set;
 @Setter
 @Entity
 @Table(name = "PAYMENT_STATUSES")
-public class PaymentStatus {
+public class PaymentStatusEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "PAYMENT_STATUSES_id_gen")
     @SequenceGenerator(name = "PAYMENT_STATUSES_id_gen", sequenceName = "PAYMENT_STATUS_SEQ", allocationSize = 1)
@@ -22,6 +22,6 @@ public class PaymentStatus {
     private String pmtsName;
 
     @OneToMany(mappedBy = "pmts")
-    private Set<Payment> payments = new LinkedHashSet<>();
+    private Set<PaymentEntity> payments = new LinkedHashSet<>();
 
 }

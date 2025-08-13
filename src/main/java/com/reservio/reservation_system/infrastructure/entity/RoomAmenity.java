@@ -20,11 +20,11 @@ public class RoomAmenity {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.RESTRICT)
     @JoinColumn(name = "RM_ID", nullable = false)
-    private Room rm;
+    private RoomEntity rm;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.RESTRICT)
     @JoinColumn(name = "AMN_ID", nullable = false)
-    private Amenity amn;
+    private AmenityEntity amn;
 
 }
