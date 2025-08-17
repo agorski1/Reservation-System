@@ -14,12 +14,12 @@ import java.time.LocalDate;
 
 @AllArgsConstructor
 @Service
-@Transactional
 public class RegistrationManager {
     private final UserDao userDao;
     private final UserRoleDao userRoleDao;
     private final PasswordEncoder passwordEncoder;
 
+    @Transactional
     public Long registerUser(String email, String rawPassword) {
         if (userDao.existsByUsrEmail(email)) {
             throw new IllegalArgumentException("Email already exists!");

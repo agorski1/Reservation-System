@@ -2,9 +2,9 @@ package com.reservio.reservation_system.presentation.controller;
 
 import com.reservio.reservation_system.infrastructure.security.UserAuthenticator;
 import com.reservio.reservation_system.infrastructure.user.RegistrationManager;
-import com.reservio.reservation_system.presentation.dto.auth.LoginRequest;
-import com.reservio.reservation_system.presentation.dto.auth.LoginResponse;
-import com.reservio.reservation_system.presentation.dto.register.RegisterRequest;
+import com.reservio.reservation_system.presentation.dto.auth.LoginRequestDto;
+import com.reservio.reservation_system.presentation.dto.auth.LoginResponseDto;
+import com.reservio.reservation_system.presentation.dto.register.RegisterRequestDto;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -21,14 +21,14 @@ public class AuthController {
     private final RegistrationManager  registrationManager;
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest dto) {
+    public ResponseEntity<LoginResponseDto> login(@Valid @RequestBody LoginRequestDto dto) {
         String token = userAuthenticator.authenticate(dto.getEmail(), dto.getPassword());
 
-        return ResponseEntity.ok(new LoginResponse(token));
+        return ResponseEntity.ok(new LoginResponseDto(token));
     }
 
     @PostMapping("/register")
-    public ResponseEntity<Void> register(@Valid @RequestBody RegisterRequest dto) {
+    public ResponseEntity<Void> register(@Valid @RequestBody RegisterRequestDto dto) {
         Long id = registrationManager.registerUser(dto.getEmail(), dto.getPassword());
 
         return ResponseEntity.ok().build();

@@ -17,11 +17,8 @@ public class UserAuthenticator {
     private final JwtUtils jwtUtils;
 
     public String authenticate(String email, String password) {
-        UserEntity user = userDao.findByUsrEmail(email);
-
-        if (user == null) {
-            throw new RuntimeException("User not found");
-        }
+        UserEntity user = userDao.findByUsrEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("Can't find user with email " + email));
 
         if (!passwordEncoder.matches(password, user.getUsrPassword())) {
             throw new RuntimeException("Incorrect password");

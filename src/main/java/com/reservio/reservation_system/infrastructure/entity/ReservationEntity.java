@@ -6,7 +6,7 @@ import lombok.Setter;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -22,10 +22,10 @@ public class ReservationEntity {
     private Long id;
 
     @Column(name = "RSV_CHECK_IN_DATE", nullable = false)
-    private LocalDate rsvCheckInDate;
+    private LocalDateTime  rsvCheckInDate;
 
     @Column(name = "RSV_CHECK_OUT_DATE", nullable = false)
-    private LocalDate rsvCheckOutDate;
+    private LocalDateTime  rsvCheckOutDate;
 
     @Column(name = "RSV_GUEST_COUNT")
     private Short rsvGuestCount;
