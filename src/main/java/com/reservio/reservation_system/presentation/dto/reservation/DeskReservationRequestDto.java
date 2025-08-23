@@ -11,6 +11,6 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class DeskReservationRequestDto {
     private Long deskId;
-    private LocalDateTime checkIn;
-    private LocalDateTime checkOut;
+    private LocalDateTime from;
+    private LocalDateTime to;
 }

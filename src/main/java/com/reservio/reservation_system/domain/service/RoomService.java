@@ -74,7 +74,7 @@ public class RoomService {
 
             String activityStatus;
             if (occupiedSlots.isEmpty()) {
-                activityStatus = "FULL";
+                activityStatus = "FREE";
             } else if (isRoomFullyOccupied(occupiedSlots, from, to)) {
                 activityStatus = "BUSY";
             } else {

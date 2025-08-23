@@ -1,5 +1,6 @@
 package com.reservio.reservation_system.infrastructure.user;
 
+import com.reservio.reservation_system.domain.exception.EmailAlreadyExistsException;
 import com.reservio.reservation_system.domain.repository.UserDao;
 import com.reservio.reservation_system.domain.repository.UserRoleDao;
 import com.reservio.reservation_system.infrastructure.entity.UserEntity;
@@ -9,7 +10,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.nio.file.LinkOption;
 import java.time.LocalDate;
 
 @AllArgsConstructor
@@ -22,7 +22,7 @@ public class RegistrationManager {
     @Transactional
     public Long registerUser(String email, String rawPassword) {
         if (userDao.existsByUsrEmail(email)) {
-            throw new IllegalArgumentException("Email already exists!");
+            throw new EmailAlreadyExistsException("Email already exists");
         }
 
         String encodedPassword = passwordEncoder.encode(rawPassword);

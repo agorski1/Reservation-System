@@ -39,7 +39,7 @@ public class ReservationController {
     @PostMapping()
     public ResponseEntity<Void> reserveRoom(@Valid @RequestBody DeskReservationRequestDto dto, Principal principal) {
         String usrEmail = principal.getName();
-        DeskReservationResponseDto deskReservationResponseDto = reservationService.reserveRoom(dto.getDeskId(), usrEmail, dto.getCheckIn(), dto.getCheckOut());
+        DeskReservationResponseDto deskReservationResponseDto = reservationService.reserveRoom(dto.getDeskId(), usrEmail, dto.getFrom(), dto.getTo());
 
         return ResponseEntity.ok().build();
     }
