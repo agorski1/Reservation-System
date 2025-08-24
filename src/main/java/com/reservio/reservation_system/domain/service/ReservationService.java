@@ -1,5 +1,6 @@
 package com.reservio.reservation_system.domain.service;
 
+import com.reservio.reservation_system.domain.exception.ReservationException;
 import com.reservio.reservation_system.domain.repository.ReservationDao;
 import com.reservio.reservation_system.domain.repository.RoomDao;
 import com.reservio.reservation_system.domain.repository.UserDao;
@@ -87,6 +88,19 @@ public class ReservationService {
         List<ReservationEntity> reservations = reservationDao.findAllByUsrIdAndRsvCheckOutDateAfter(userId, now);
 
         return reservationMapper.toUserReservationDtos(reservations);
+    }
+
+    public boolean isDeskAvailable(Long deskId, LocalDateTime from, LocalDateTime to) {
+        if (from.isBefore(LocalDateTime.now()) || to.isBefore(LocalDateTime.now())) {
+            throw new ReservationException("Rezerwacja nie może być w przeszłości");
+        }
+
+        if (!from.isBefore(to)) {
+            throw new ReservationException("'from' musi być przed 'to'");
+        }
+
+        boolean existsOverlap = reservationDao.existsOverlappingReservation(deskId, from, to);
+        return !existsOverlap;
     }
 
 

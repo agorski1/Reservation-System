@@ -2,6 +2,7 @@ package com.reservio.reservation_system.presentation.exception;
 
 import com.reservio.reservation_system.domain.exception.EmailAlreadyExistsException;
 import com.reservio.reservation_system.domain.exception.InvalidCredentialsException;
+import com.reservio.reservation_system.domain.exception.ReservationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -30,6 +31,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(EmailAlreadyExistsException.class)
     public ResponseEntity<ErrorResponse> handleEmailAlreadyExists(EmailAlreadyExistsException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(e.getMessage()));
+    }
+
+    @ExceptionHandler(ReservationException.class)
+    public ResponseEntity<ErrorResponse> handleReservationException(ReservationException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new ErrorResponse(ex.getMessage()));
     }
 
 }

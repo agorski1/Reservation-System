@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -42,5 +43,15 @@ public class ReservationController {
         DeskReservationResponseDto deskReservationResponseDto = reservationService.reserveRoom(dto.getDeskId(), usrEmail, dto.getFrom(), dto.getTo());
 
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/check-availability")
+    public ResponseEntity<Boolean> checkAvailability(
+            @RequestParam Long deskId,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime from,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime to) {
+
+        boolean available = reservationService.isDeskAvailable(deskId, from, to);
+        return ResponseEntity.ok(available);
     }
 }
