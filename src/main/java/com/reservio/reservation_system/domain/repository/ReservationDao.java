@@ -31,4 +31,5 @@ public interface ReservationDao extends JpaRepository<ReservationEntity, Long> {
 
     List<ReservationEntity> findAllByUsrIdAndRsvCheckOutDateAfter(Long usrId, LocalDateTime now);
 
+
 }

@@ -90,6 +90,13 @@ public class RoomService {
         }).toList();
     }
 
+    public List<RoomReservationDto> getRoomReservations(Long deskId, LocalDateTime from, LocalDateTime to) {
+        List<ReservationEntity> reservations = reservationDao
+                .findAllByRsvCheckInDateLessThanEqualAndRsvCheckOutDateGreaterThanEqual(to, from);
+
+        return reservationMapper.toRoomReservationDtos(reservations);
+    }
+
     private boolean isRoomFullyOccupied(List<RoomSlotDto> slots, LocalDateTime from, LocalDateTime to) {
         slots.sort(Comparator.comparing(RoomSlotDto::getStart));
 

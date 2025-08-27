@@ -54,4 +54,5 @@ public class ReservationController {
         boolean available = reservationService.isDeskAvailable(deskId, from, to);
         return ResponseEntity.ok(available);
     }
+
 }

@@ -41,6 +41,14 @@ public class RoomController {
         return ResponseEntity.ok(availability);
     }
 
-
-
+//    @GetMapping("/{deskId}/reservations")
+//    public ResponseEntity<List<RoomReservationDto>> getDesksAvailability(
+//            @PathVariable Long deskId,
+//            @RequestParam("from") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime from,
+//            @RequestParam("to") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime to) {
+//
+//        List<RoomReservationDto> reservation = roomService.getRoomReservations(deskId, from, to);
+//
+//        return ResponseEntity.ok(reservation);
+//    }
 }
