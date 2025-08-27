@@ -40,7 +40,5 @@ public class ReservationEntity {
     @JoinColumn(name = "USR_ID", nullable = false)
     private UserEntity usr;
 
-    @OneToMany(mappedBy = "rsv")
-    private Set<PaymentEntity> payments = new LinkedHashSet<>();
 
 }

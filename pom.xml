@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.reservio</groupId>
     <artifactId>Reservation-System</artifactId>
-    <version>1.0.0-HOTDESK</version>
+    <version>3.0.0-HOTDESK</version>
     <name>reservation_system</name>
     <url/>
     <developers>

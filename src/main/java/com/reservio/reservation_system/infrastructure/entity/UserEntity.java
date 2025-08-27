@@ -55,10 +55,6 @@ public class UserEntity {
     @JoinColumn(name = "UR_ID")
     private UserRoleEntity ur;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @OnDelete(action = OnDeleteAction.RESTRICT)
-    @JoinColumn(name = "CT_ID")
-    private CountryEntity ct;
 
     @OneToMany(mappedBy = "usr")
     private Set<ReservationEntity> reservations = new LinkedHashSet<>();
