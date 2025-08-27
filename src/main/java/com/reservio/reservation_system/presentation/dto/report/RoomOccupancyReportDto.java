@@ -14,6 +14,7 @@ public class RoomOccupancyReportDto {
     private Integer occupiedDays;
     private Integer totalDays;
     private Float occupancyRate; // procent zajetosci
+
     private LocalDate startDate;
     private LocalDate endDate;
 }

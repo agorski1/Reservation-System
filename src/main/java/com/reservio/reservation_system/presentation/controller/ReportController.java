@@ -1,6 +1,8 @@
 package com.reservio.reservation_system.presentation.controller;
 
-import org.apache.coyote.Response;
+import com.reservio.reservation_system.domain.service.ReportService;
+import com.reservio.reservation_system.presentation.dto.report.PaymentReportDto;
+import lombok.AllArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,18 +11,32 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("rs/reports")
+@AllArgsConstructor
 public class ReportController {
 
-    @GetMapping("/occupancy")
-    public ResponseEntity<Response> getOccupancyReport(
+    private final ReportService reportService;
+
+    @GetMapping("/payments")
+    public ResponseEntity<PaymentReportDto> getPaymentReport(
             @RequestParam("from") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDate from,
-            @RequestParam("to") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime to) {
+            @RequestParam("to") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDate to) {
+
+        return ResponseEntity.ok(reportService.getPaymentReport(from, to));
 
 
     }
+
+//    @GetMapping("/occupancy")
+//    public ResponseEntity<Response> getOccupancyReport(
+//            @RequestParam("from") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDate from,
+//            @RequestParam("to") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime to) {
+//
+//
+//    }
+
+
 
 }

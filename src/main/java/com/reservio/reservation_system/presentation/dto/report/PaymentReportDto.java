@@ -12,11 +12,10 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class PaymentReportDto {
     private String roomNumber;
-    private BigDecimal totalRevenue;
-    private long paymentCount;
-    private BigDecimal averagePaymentAmount;
+    private BigDecimal totalRevenue; // suma wszystkich platnosci
+    private long paymentCount; // liczba dokonanych platnosci
+    private BigDecimal averagePaymentAmount; // totalRevenue/paymentCount
     private String mostUsedPaymentMethod;
-    private long totalReservationDays;
 
     private LocalDate startDate;
     private LocalDate endDate;
