@@ -16,13 +16,11 @@ CREATE TABLE User_Roles
     UR_name VARCHAR2(20) UNIQUE NOT NULL
 );
 
-
 CREATE TABLE Countries
 (
     CT_id   NUMBER DEFAULT country_seq.nextval PRIMARY KEY,
     CT_name VARCHAR2(50) UNIQUE NOT NULL
 );
-
 
 CREATE TABLE Users
 (

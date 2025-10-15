@@ -7,28 +7,14 @@ import com.reservio.reservation_system.domain.repository.UserDao;
 import com.reservio.reservation_system.infrastructure.entity.ReservationEntity;
 import com.reservio.reservation_system.infrastructure.entity.RoomEntity;
 import com.reservio.reservation_system.infrastructure.entity.UserEntity;
-import com.reservio.reservation_system.presentation.dto.User.UserDto;
 import com.reservio.reservation_system.presentation.dto.reservation.DeskReservationResponseDto;
 import com.reservio.reservation_system.presentation.dto.reservation.UserReservationDto;
-import com.reservio.reservation_system.presentation.dto.room.RoomDetailsDto;
-import com.reservio.reservation_system.presentation.dto.room.RoomSlotDto;
 import com.reservio.reservation_system.presentation.mapper.ReservationMapper;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.Value;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Service;
-
-import java.security.PublicKey;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -37,8 +23,6 @@ public class ReservationService {
     private final RoomDao roomDao;
     private final UserDao userDao;
     private final ReservationMapper reservationMapper;
-    private final LocalTime openingHour = LocalTime.of(7, 0);
-    private final LocalTime closingHour = LocalTime.of(18, 0);
 
     @Transactional
     public DeskReservationResponseDto reserveRoom(Long roomId, String usrEmail, LocalDateTime from, LocalDateTime to) {
@@ -76,9 +60,8 @@ public class ReservationService {
                 .orElseThrow(() -> new IllegalArgumentException("Reservation not found with ID " + reservationId));
 
         if (!reservation.getUsr().getId().equals(userId)) {
-            throw new SecurityException("You are not allowed to cancel this reservation");
+           throw new SecurityException("You are not allowed to cancel this reservation");
         }
-
         reservationDao.delete(reservation);
     }
 

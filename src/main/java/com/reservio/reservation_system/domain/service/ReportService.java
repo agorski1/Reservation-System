@@ -1,11 +1,9 @@
 package com.reservio.reservation_system.domain.service;
 
 import com.reservio.reservation_system.domain.repository.ReservationDao;
-import com.reservio.reservation_system.domain.repository.RoomDao;
 import com.reservio.reservation_system.infrastructure.entity.PaymentEntity;
 import com.reservio.reservation_system.infrastructure.entity.ReservationEntity;
 import com.reservio.reservation_system.presentation.dto.report.PaymentReportDto;
-import com.reservio.reservation_system.presentation.dto.report.RoomOccupancyReportDto;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,10 +17,10 @@ import java.util.stream.Collectors;
 @Service
 @AllArgsConstructor
 public class ReportService {
-    private final RoomDao roomDao;
     private final ReservationDao reservationDao;
 
 //    public List<RoomOccupancyReportDto> calculateRoomOccupancy(LocalDate startDate, LocalDate endDate) {
+//
 //
 //    }
 

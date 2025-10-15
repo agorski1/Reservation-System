@@ -1,6 +1,6 @@
 package com.reservio.reservation_system.presentation.dto.room;
 
-import com.reservio.reservation_system.presentation.dto.User.UserDto;
+import com.reservio.reservation_system.presentation.dto.user.UserDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;

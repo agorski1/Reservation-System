@@ -27,15 +27,15 @@ public class ReportController {
         return ResponseEntity.ok(reportService.getPaymentReport(from, to));
 
 
-    }
+
 
 //    @GetMapping("/occupancy")
 //    public ResponseEntity<Response> getOccupancyReport(
 //            @RequestParam("from") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDate from,
 //            @RequestParam("to") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime to) {
+
 //
-//
-//    }
+    }
 
 
 

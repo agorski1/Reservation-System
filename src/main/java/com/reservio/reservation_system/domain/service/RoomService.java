@@ -4,9 +4,8 @@ import com.reservio.reservation_system.domain.repository.ReservationDao;
 import com.reservio.reservation_system.domain.repository.RoomDao;
 import com.reservio.reservation_system.infrastructure.entity.ReservationEntity;
 import com.reservio.reservation_system.infrastructure.entity.RoomEntity;
-import com.reservio.reservation_system.presentation.dto.User.UserDto;
+import com.reservio.reservation_system.presentation.dto.user.UserDto;
 import com.reservio.reservation_system.presentation.dto.reservation.RoomReservationDto;
-import com.reservio.reservation_system.presentation.dto.reservation.UserReservationDto;
 import com.reservio.reservation_system.presentation.dto.room.RoomDetailsDto;
 import com.reservio.reservation_system.presentation.dto.room.RoomDto;
 import com.reservio.reservation_system.presentation.dto.room.RoomSlotDto;
@@ -14,10 +13,7 @@ import com.reservio.reservation_system.presentation.mapper.ReservationMapper;
 import com.reservio.reservation_system.presentation.mapper.RoomMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -31,9 +27,6 @@ public class RoomService {
     private final ReservationDao reservationDao;
     private final RoomMapper roomMapper;
     private final ReservationMapper reservationMapper;
-    private final LocalTime openingHour = LocalTime.of(7, 0);
-    private final LocalTime closingHour = LocalTime.of(18, 0);
-
 
     public List<RoomDto> getAllRoomsWithDetails() {
         List<RoomEntity> rooms = roomDao.findAll();
@@ -93,7 +86,7 @@ public class RoomService {
     public List<RoomReservationDto> getRoomReservations(Long deskId, LocalDateTime from, LocalDateTime to) {
         List<ReservationEntity> reservations = reservationDao
                 .findAllByRsvCheckInDateLessThanEqualAndRsvCheckOutDateGreaterThanEqual(to, from);
-
+        System.out.println();
         return reservationMapper.toRoomReservationDtos(reservations);
     }
 
