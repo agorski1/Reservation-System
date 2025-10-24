@@ -1,8 +1,10 @@
 package com.reservio.reservation_system.infrastructure.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -42,5 +44,12 @@ public class ReservationEntity {
 
     @OneToMany(mappedBy = "rsv")
     private Set<PaymentEntity> payments = new LinkedHashSet<>();
+
+    @NotNull
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @OnDelete(action = OnDeleteAction.RESTRICT)
+    @ColumnDefault("1")
+    @JoinColumn(name = "RSVS_ID", nullable = false)
+    private ReservationStatusEntity rsvs;
 
 }

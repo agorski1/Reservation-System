@@ -28,11 +28,11 @@ public class RoomService {
     private final RoomMapper roomMapper;
     private final ReservationMapper reservationMapper;
 
-    public List<RoomDto> getAllRoomsWithDetails() {
-        List<RoomEntity> rooms = roomDao.findAll();
-
-        return roomMapper.toRoomDtoList(rooms);
-    }
+//    public List<RoomDto> getAllRoomsWithDetails() {
+//        List<RoomEntity> rooms = roomDao.findAll();
+//
+//        return roomMapper.toRoomDtoList(rooms);
+//    }
 
     public List<RoomReservationDto> getCurrentReservationsForRoom(Long roomId) {
         LocalDateTime now = LocalDateTime.now();

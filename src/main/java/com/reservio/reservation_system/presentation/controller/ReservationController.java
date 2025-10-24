@@ -4,7 +4,6 @@ import com.reservio.reservation_system.domain.service.ReservationService;
 import com.reservio.reservation_system.presentation.dto.reservation.DeskReservationRequestDto;
 import com.reservio.reservation_system.presentation.dto.reservation.DeskReservationResponseDto;
 import com.reservio.reservation_system.presentation.dto.reservation.UserReservationDto;
-import com.reservio.reservation_system.presentation.dto.room.RoomDetailsDto;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;

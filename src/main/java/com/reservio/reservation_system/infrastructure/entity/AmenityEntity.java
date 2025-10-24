@@ -25,6 +25,6 @@ public class AmenityEntity {
     private String amnCode;
 
     @OneToMany(mappedBy = "amn")
-    private Set<RoomAmenity> roomAmenities = new LinkedHashSet<>();
+    private Set<RoomTypeAmenityEntity> roomAmenities = new LinkedHashSet<>();
 
 }

@@ -1,13 +1,14 @@
 package com.reservio.reservation_system.infrastructure.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
-import java.math.BigDecimal;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -22,28 +23,22 @@ public class RoomEntity {
     @Column(name = "RM_ID", nullable = false)
     private Long id;
 
+    @NotNull
     @Column(name = "RM_NUMBER", nullable = false)
     private Short rmNumber;
 
-    @ColumnDefault("'N'")
-    @Column(name = "RM_IS_DELETED")
-    private Boolean rmIsDeleted;
-
-    @Column(name = "RM_PRICE_PER_NIGHT", precision = 10, scale = 2)
-    private BigDecimal rmPricePerNight;
-
-    @Column(name = "RM_CAPACITY")
-    private Short rmCapacity;
+    @Size(max = 20)
+    @ColumnDefault("'ACTIVE'")
+    @Column(name = "RM_STATUS", length = 20)
+    private String rmStatus;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.RESTRICT)
     @JoinColumn(name = "RT_ID")
     private RoomTypeEntity rt;
 
-    @OneToMany(mappedBy = "rm")
+    @OneToMany
+    @JoinColumn(name = "RM_ID")
     private Set<ReservationEntity> reservations = new LinkedHashSet<>();
-
-    @OneToMany(mappedBy = "rm")
-    private Set<RoomAmenity> roomAmenities = new LinkedHashSet<>();
 
 }

@@ -8,7 +8,7 @@ CREATE SEQUENCE reservation_seq START WITH 1 INCREMENT BY 1 NOCACHE NOCYCLE;
 CREATE SEQUENCE room_seq START WITH 1 INCREMENT BY 1 NOCACHE NOCYCLE;
 CREATE SEQUENCE room_type_seq START WITH 1 INCREMENT BY 1 NOCACHE NOCYCLE;
 CREATE SEQUENCE amenity_seq START WITH 1 INCREMENT BY 1 NOCACHE NOCYCLE;
-CREATE SEQUENCE room_amenity_seq START WITH 1 INCREMENT BY 1 NOCACHE NOCYCLE;
+CREATE SEQUENCE room_type_amenity_seq START WITH 1 INCREMENT BY 1 NOCACHE NOCYCLE;
 CREATE SEQUENCE reservation_status_seq START WITH 1 INCREMENT BY 1 NOCACHE NOCYCLE;
 CREATE TABLE User_Roles
 (
@@ -60,6 +60,9 @@ CREATE TABLE Payment_Statuses
 CREATE TABLE Room_type
 (
     RT_id   NUMBER DEFAULT room_type_seq.nextval PRIMARY KEY,
+    RM_status      VARCHAR(20) DEFAULT 'ACTIVE' CHECK ( RM_status IN ('ACTIVE', 'UNDER_MAINTENANCE','DELETED')),
+    RM_price_per_night NUMBER(10, 2) CHECK (RM_price_per_night >= 0),
+    RM_capacity        NUMBER(2) CHECK (RM_capacity > 0),
     RT_name VARCHAR2(20) NOT NULL
 );
 
@@ -67,9 +70,6 @@ CREATE TABLE Rooms
 (
     RM_id              NUMBER  DEFAULT room_seq.nextval PRIMARY KEY,
     RM_number          NUMBER(4) NOT NULL UNIQUE,
-    RM_status      VARCHAR(20) DEFAULT 'ACTIVE' CHECK ( RM_status IN ('ACTIVE', 'UNDER_MAINTENANCE','DELETED')),
-    RM_price_per_night NUMBER(10, 2) CHECK (RM_price_per_night >= 0),
-    RM_capacity        NUMBER(2) CHECK (RM_capacity > 0),
     RT_id              NUMBER,
     FOREIGN KEY (RT_id) REFERENCES Room_type (RT_id)
 );
@@ -82,13 +82,12 @@ CREATE TABLE Amenities
     AMN_code VARCHAR2(20) UNIQUE NOT NULL
 );
 
-
-CREATE TABLE Room_Amenities
+CREATE TABLE Room_Type_Amenities
 (
-    RA_id  NUMBER DEFAULT room_amenity_seq.nextval PRIMARY KEY,
-    RM_id  NUMBER NOT NULL,
+    RTA_id  NUMBER DEFAULT room_type_amenity_seq.nextval PRIMARY KEY,
+    RT_id  NUMBER NOT NULL,
     AMN_id NUMBER NOT NULL,
-    FOREIGN KEY (RM_id) REFERENCES Rooms (RM_id),
+    FOREIGN KEY (RT_id) REFERENCES ROOM_TYPE (RT_id),
     FOREIGN KEY (AMN_id) REFERENCES Amenities (AMN_id)
 );
 

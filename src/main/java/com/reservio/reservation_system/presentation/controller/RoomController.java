@@ -19,12 +19,12 @@ public class RoomController {
     private final RoomService roomService;
 
 
-    @GetMapping
-    public ResponseEntity<List<RoomDto>> getAllRooms() {
-        List<RoomDto> rooms = roomService.getAllRoomsWithDetails();
-
-        return ResponseEntity.ok(rooms);
-    }
+//    @GetMapping
+//    public ResponseEntity<List<RoomDto>> getAllRooms() {
+//        List<RoomDto> rooms = roomService.getAllRoomsWithDetails();
+//
+//        return ResponseEntity.ok(rooms);
+//    }
 
     @GetMapping("/{deskId}/current-reservations")
     public ResponseEntity<List<RoomReservationDto>> getCurrentReservations(@PathVariable Long deskId) {

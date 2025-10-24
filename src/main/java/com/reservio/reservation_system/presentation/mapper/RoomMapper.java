@@ -3,7 +3,6 @@ package com.reservio.reservation_system.presentation.mapper;
 import com.reservio.reservation_system.infrastructure.entity.ReservationEntity;
 import com.reservio.reservation_system.infrastructure.entity.RoomEntity;
 import com.reservio.reservation_system.presentation.dto.room.RoomDetailsDto;
-import com.reservio.reservation_system.presentation.dto.room.RoomDto;
 import com.reservio.reservation_system.presentation.dto.room.RoomSlotDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -12,15 +11,6 @@ import java.util.List;
 
 @Mapper(componentModel = "spring", uses = UserMapper.class)
 public interface RoomMapper {
-
-    @Mapping(source = "rt.rtName", target = "type")
-    @Mapping(source = "rmNumber", target = "number")
-    @Mapping(target = "amenities", expression =
-            "java(room.getRoomAmenities().stream()" +
-                    ".map(ra -> ra.getAmn().getAmnName())" +
-                    ".toList())")
-    RoomDto toRoomDto(RoomEntity room);
-    List<RoomDto> toRoomDtoList(List<RoomEntity> rooms);
 
     @Mapping(source = "rsvCheckInDate", target = "start")
     @Mapping(source = "rsvCheckOutDate", target = "end")
