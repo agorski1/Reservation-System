@@ -9,7 +9,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -20,12 +22,14 @@ public class RoomTypeController {
 
     @GetMapping("/available")
     public ResponseEntity<List<AvailableRoomTypeDto>> getAvailableRoomTypes(
-            @RequestParam(required = false) LocalDate from,
-            @RequestParam(required = false) LocalDate to,
-            @RequestParam(required = false) Integer capacity,
+            @RequestParam(required = false) LocalDateTime from,
+            @RequestParam(required = false) LocalDateTime to,
+            @RequestParam(required = false) List<Integer> capacity,
+            @RequestParam(required = false) BigDecimal minPrice,
+            @RequestParam(required = false) BigDecimal maxPrice,
             @RequestParam(required = false) List<String> amenities
     ) {
-        return ResponseEntity.ok(roomTypeService.findAvailableRoomTypes(from, to, capacity, amenities));
+        return ResponseEntity.ok(roomTypeService.findAvailableRoomTypes(from, to, capacity, minPrice, maxPrice, amenities));
     }
 
 }

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -38,9 +39,9 @@ public interface RoomTypeDao extends JpaRepository<RoomTypeEntity, Long> {
                     "                    AND a.amnCode = a2.amnCode\n" +
                     "            )\n" +
                     "    ))")
-    List<RoomTypeEntity> findAvailableRoomTypes(@Param("checkIn") LocalDate checkIn,
-                                                @Param("checkOut") LocalDate checkOut,
-                                                @Param("capacity") Integer capacity,
+    List<RoomTypeEntity> findAvailableRoomTypes(@Param("checkIn") LocalDateTime checkIn,
+                                                @Param("checkOut") LocalDateTime checkOut,
+                                                @Param("capacity") List<Integer> capacity,
                                                 @Param("minPrice") BigDecimal minPrice,
                                                 @Param("maxPrice") BigDecimal maxPrice,
                                                 @Param("amenities")  List<String> amenities);

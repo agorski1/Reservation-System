@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -33,5 +35,8 @@ public class RoomTypeEntity {
     @Size(max = 200)
     @Column(name = "RT_DESCRIPTION", length = 200)
     private String rtDescription;
+
+    @OneToMany(mappedBy = "rt")
+    private Set<RoomTypeAmenityEntity> roomTypeAmenities = new LinkedHashSet<>();
 
 }
