@@ -9,9 +9,10 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @AllArgsConstructor
-public class DeskReservationResponseDto {
+public class RoomReservationResponseDto {
     private Long id;
     private Long roomId;
+    private Short guestCount;
     private LocalDateTime from;
     private LocalDateTime to;
 }

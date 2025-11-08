@@ -106,5 +106,10 @@ public class RoomService {
         return !current.isBefore(to);
     }
 
+    public List<RoomDto> getAvailableRooms(Long roomTypeId,
+                                           LocalDateTime from,
+                                           LocalDateTime to) {
+        return null;
+    }
 }
 

@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -29,7 +28,12 @@ public class RoomTypeController {
             @RequestParam(required = false) BigDecimal maxPrice,
             @RequestParam(required = false) List<String> amenities
     ) {
-        return ResponseEntity.ok(roomTypeService.findAvailableRoomTypes(from, to, capacity, minPrice, maxPrice, amenities));
+        return ResponseEntity.ok(roomTypeService.findAvailableRoomTypes(from,
+                to,
+                capacity,
+                minPrice,
+                maxPrice,
+                amenities));
     }
 
 }

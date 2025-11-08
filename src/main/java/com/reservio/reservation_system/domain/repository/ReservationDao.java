@@ -1,6 +1,5 @@
 package com.reservio.reservation_system.domain.repository;
 
-import com.reservio.reservation_system.domain.model.Reservation;
 import com.reservio.reservation_system.infrastructure.entity.ReservationEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -32,6 +31,8 @@ public interface ReservationDao extends JpaRepository<ReservationEntity, Long> {
             LocalDateTime end, LocalDateTime start);
 
     List<ReservationEntity> findAllByUsrIdAndRsvCheckOutDateAfter(Long usrId, LocalDateTime now);
+
+    List<ReservationEntity> findAllByUsrId(Long usrId);
 
     @Query("SELECT r FROM ReservationEntity r " +
             "JOIN r.payments p " +

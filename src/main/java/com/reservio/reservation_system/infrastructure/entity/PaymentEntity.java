@@ -8,7 +8,7 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -26,7 +26,7 @@ public class PaymentEntity {
 
     @ColumnDefault("SYSDATE")
     @Column(name = "PMT_DATE")
-    private LocalDate pmtDate;
+    private LocalDateTime pmtDate;
 
     @Column(name = "PMT_ACCOUNT_NUMBER", length = 34)
     private String pmtAccountNumber;

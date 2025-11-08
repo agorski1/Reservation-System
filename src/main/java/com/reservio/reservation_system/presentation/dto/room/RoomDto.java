@@ -12,6 +12,4 @@ import java.util.List;
 public class RoomDto {
     private Long id;
     private Long number;
-    private String type;
-    private List<String> amenities;
 }

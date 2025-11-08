@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
-@RequestMapping("hd/desks")
+@RequestMapping("hd/rooms")
 @AllArgsConstructor
 public class RoomController {
     private final RoomService roomService;
@@ -39,6 +39,16 @@ public class RoomController {
             @RequestParam("to") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime to) {
         List<RoomDetailsDto> availability = roomService.getRoomsAvailability(from, to);
         return ResponseEntity.ok(availability);
+    }
+
+    @GetMapping("/available")
+    public ResponseEntity<List<RoomDto>> getRooms(
+            @RequestParam Long roomTypeId,
+            @RequestParam LocalDateTime from,
+            @RequestParam LocalDateTime to
+    ) {
+        List<RoomDto> availableRooms = roomService.getAvailableRooms(roomTypeId, from, to);
+        return ResponseEntity.ok(availableRooms);
     }
 
 //    @GetMapping("/{deskId}/reservations")
