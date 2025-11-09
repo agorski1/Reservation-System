@@ -1,13 +1,7 @@
 package com.reservio.reservation_system.domain.service;
 
-import com.reservio.reservation_system.domain.repository.PaymentDao;
-import com.reservio.reservation_system.domain.repository.PaymentStatusDao;
-import com.reservio.reservation_system.domain.repository.ReservationDao;
-import com.reservio.reservation_system.domain.repository.ReservationStatusDao;
-import com.reservio.reservation_system.infrastructure.entity.PaymentEntity;
-import com.reservio.reservation_system.infrastructure.entity.PaymentStatusEntity;
-import com.reservio.reservation_system.infrastructure.entity.ReservationEntity;
-import com.reservio.reservation_system.infrastructure.entity.ReservationStatusEntity;
+import com.reservio.reservation_system.domain.repository.*;
+import com.reservio.reservation_system.infrastructure.entity.*;
 import com.reservio.reservation_system.presentation.dto.payment.PaymentResponseDto;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
@@ -23,9 +17,14 @@ public class PaymentService {
     private final ReservationDao reservationDao;
     private final ReservationStatusDao reservationStatusDao;
     private final PaymentStatusDao paymentStatusDao;
+    private final PaymentMethodDao paymentMethodDao;
 
     @Transactional
     public PaymentResponseDto processPayment(Long reservationId, Long userId, Float amount, String paymentMethod) {
+
+        if (amount == null || amount <= 0) {
+            throw new IllegalArgumentException("Invalid payment amount");
+        }
 
         ReservationEntity reservation = reservationDao.findById(reservationId)
                 .orElseThrow(() -> new IllegalArgumentException("Reservation not found"));
@@ -39,16 +38,17 @@ public class PaymentService {
         payment.setPmtAmount(BigDecimal.valueOf(amount));
         payment.setPmtDate(LocalDateTime.now());
 
-
         PaymentStatusEntity statusPaid = paymentStatusDao.findByPmtsName("PAID")
                 .orElseThrow(() -> new IllegalArgumentException("Payment status PAID not found"));
-
         payment.setPmts(statusPaid);
+
+        PaymentMethodEntity methodEntity = paymentMethodDao.findByPmtmName(paymentMethod)
+                .orElseThrow(() -> new IllegalArgumentException("Payment method not found: " + paymentMethod));
+        payment.setPmtm(methodEntity);
 
         paymentDao.save(payment);
 
         BigDecimal totalPaid = paymentDao.getPaidAmountReservation(reservationId);
-
         BigDecimal roomPrice = reservation.getRm().getRt().getRtPricePerNight();
 
         String statusName;
@@ -62,10 +62,8 @@ public class PaymentService {
 
         ReservationStatusEntity newStatus = reservationStatusDao.findByRsvsName(statusName)
                 .orElseThrow(() -> new IllegalArgumentException("Reservation status not found: " + statusName));
-
         reservation.setRsvs(newStatus);
         reservationDao.save(reservation);
-
 
         return new PaymentResponseDto(
                 reservation.getId(),
