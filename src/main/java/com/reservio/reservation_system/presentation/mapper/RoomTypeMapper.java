@@ -4,6 +4,7 @@ import com.reservio.reservation_system.infrastructure.entity.AmenityEntity;
 import com.reservio.reservation_system.infrastructure.entity.RoomTypeAmenityEntity;
 import com.reservio.reservation_system.infrastructure.entity.RoomTypeEntity;
 import com.reservio.reservation_system.presentation.dto.room.AvailableRoomTypeDto;
+import com.reservio.reservation_system.presentation.dto.room.RoomTypeDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
@@ -39,6 +40,16 @@ public interface RoomTypeMapper {
                 })
                 .collect(Collectors.toList());
     }
+
+
+    @Mapping(target = "id", source = "entity.id")
+    @Mapping(target = "name", source = "entity.rtName")
+    @Mapping(target = "capacity", source = "entity.rtCapacity")
+    @Mapping(target = "pricePerNight", source = "entity.rtPricePerNight")
+    @Mapping(target = "description", source = "entity.rtDescription")
+    RoomTypeDto toRoomTypeDto(RoomTypeEntity entity);
+
+    List<RoomTypeDto> toRoomTypeDtoList(List<RoomTypeEntity> entities);
 
     @Named("mapAmenityNames")
     default List<String> mapAmenityNames(Set<RoomTypeAmenityEntity> roomTypeAmenities) {

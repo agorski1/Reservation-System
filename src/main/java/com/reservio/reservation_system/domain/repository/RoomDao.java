@@ -9,10 +9,11 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface RoomDao extends JpaRepository<RoomEntity, Long> {
-    RoomEntity findRoomEntitiesById(Long id);
+    Optional<RoomEntity> findFirstById(Long id);
     List<RoomEntity> findAllByOrderByRmNumber();
     List<RoomEntity> findAll(Specification<RoomEntity> spec);
 

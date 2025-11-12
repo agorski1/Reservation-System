@@ -4,13 +4,15 @@ import com.reservio.reservation_system.domain.repository.ReservationDao;
 import com.reservio.reservation_system.domain.repository.RoomDao;
 import com.reservio.reservation_system.infrastructure.entity.ReservationEntity;
 import com.reservio.reservation_system.infrastructure.entity.RoomEntity;
+import com.reservio.reservation_system.presentation.dto.room.RoomDto;
 import com.reservio.reservation_system.presentation.dto.user.UserDto;
 import com.reservio.reservation_system.presentation.dto.reservation.RoomReservationDto;
 import com.reservio.reservation_system.presentation.dto.room.RoomDetailsDto;
-import com.reservio.reservation_system.presentation.dto.room.RoomDto;
+import com.reservio.reservation_system.presentation.dto.room.AvailableRoomDto;
 import com.reservio.reservation_system.presentation.dto.room.RoomSlotDto;
 import com.reservio.reservation_system.presentation.mapper.ReservationMapper;
 import com.reservio.reservation_system.presentation.mapper.RoomMapper;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
@@ -28,11 +30,10 @@ public class RoomService {
     private final RoomMapper roomMapper;
     private final ReservationMapper reservationMapper;
 
-//    public List<RoomDto> getAllRoomsWithDetails() {
-//        List<RoomEntity> rooms = roomDao.findAll();
-//
-//        return roomMapper.toRoomDtoList(rooms);
-//    }
+    public List<RoomDto> getAllRoomsWithDetails() {
+        List<RoomEntity> rooms = roomDao.findAll();
+
+        return roomMapper.toRoomDtoList(rooms); }
 
     public List<RoomReservationDto> getCurrentReservationsForRoom(Long roomId) {
         LocalDateTime now = LocalDateTime.now();
@@ -90,6 +91,27 @@ public class RoomService {
         return reservationMapper.toRoomReservationDtos(reservations);
     }
 
+    public RoomDto updateRoomStatus(Long roomId, String newStatus) {
+        RoomEntity room = roomDao.findFirstById(roomId)
+                .orElseThrow(() -> new IllegalArgumentException("Can't find room with id " + roomId));
+
+        room.setRmStatus(newStatus);
+
+        RoomEntity updatedRoom = roomDao.save(room);
+        return roomMapper.toRoomDto(updatedRoom);
+    }
+
+
+    public RoomDto updateRoomPricePerNight(Long roomId, Float newPrice) {
+        RoomEntity room = roomDao.findFirstById(roomId)
+                .orElseThrow(() -> new IllegalArgumentException("Can't find room with id " + roomId));
+
+        room.setRM(newPrice);
+
+        RoomEntity updatedRoom = roomDao.save(room);
+        return roomMapper.toRoomDto(updatedRoom);
+    }
+
     private boolean isRoomFullyOccupied(List<RoomSlotDto> slots, LocalDateTime from, LocalDateTime to) {
         slots.sort(Comparator.comparing(RoomSlotDto::getStart));
 
@@ -106,9 +128,9 @@ public class RoomService {
         return !current.isBefore(to);
     }
 
-    public List<RoomDto> getAvailableRooms(Long roomTypeId,
-                                           LocalDateTime from,
-                                           LocalDateTime to) {
+    public List<AvailableRoomDto> getAvailableRooms(Long roomTypeId,
+                                                    LocalDateTime from,
+                                                    LocalDateTime to) {
         return null;
     }
 }

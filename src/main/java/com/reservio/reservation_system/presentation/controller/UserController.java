@@ -1,6 +1,7 @@
 package com.reservio.reservation_system.presentation.controller;
 
 import com.reservio.reservation_system.domain.service.UserService;
+import com.reservio.reservation_system.presentation.dto.user.AdminPasswordChangeDto;
 import com.reservio.reservation_system.presentation.dto.user.EmployeeDto;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;

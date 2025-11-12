@@ -3,6 +3,7 @@ package com.reservio.reservation_system.domain.service;
 import com.reservio.reservation_system.domain.repository.RoomTypeDao;
 import com.reservio.reservation_system.infrastructure.entity.RoomTypeEntity;
 import com.reservio.reservation_system.presentation.dto.room.AvailableRoomTypeDto;
+import com.reservio.reservation_system.presentation.dto.room.RoomTypeDto;
 import com.reservio.reservation_system.presentation.mapper.RoomTypeMapper;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
@@ -46,6 +47,14 @@ public class RoomTypeService {
                         entity -> calculateTotalPrice(entity, from, to)
                 ));
         return roomTypeMapper.toAvailableRoomTypeDtos(roomTypes, totalPricesById);
+    }
+
+
+    public List<RoomTypeDto> getRoomTypes() {
+        List<RoomTypeEntity> roomTypes = roomTypeDao.findAll();
+
+        return roomTypeMapper.toRoomTypeDtoList(roomTypes);
+
     }
 
     private BigDecimal calculateTotalPrice(RoomTypeEntity entity, LocalDateTime from, LocalDateTime to) {

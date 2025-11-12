@@ -3,6 +3,7 @@ package com.reservio.reservation_system.presentation.controller;
 import com.reservio.reservation_system.domain.service.RoomService;
 import com.reservio.reservation_system.presentation.dto.reservation.RoomReservationDto;
 import com.reservio.reservation_system.presentation.dto.room.RoomDetailsDto;
+import com.reservio.reservation_system.presentation.dto.room.AvailableRoomDto;
 import com.reservio.reservation_system.presentation.dto.room.RoomDto;
 import lombok.AllArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -19,12 +20,12 @@ public class RoomController {
     private final RoomService roomService;
 
 
-//    @GetMapping
-//    public ResponseEntity<List<RoomDto>> getAllRooms() {
-//        List<RoomDto> rooms = roomService.getAllRoomsWithDetails();
-//
-//        return ResponseEntity.ok(rooms);
-//    }
+    @GetMapping
+    public ResponseEntity<List<RoomDto>> getAllRooms() {
+        List<RoomDto> rooms = roomService.getAllRoomsWithDetails();
+
+        return ResponseEntity.ok(rooms);
+    }
 
     @GetMapping("/{deskId}/current-reservations")
     public ResponseEntity<List<RoomReservationDto>> getCurrentReservations(@PathVariable Long deskId) {
@@ -42,12 +43,12 @@ public class RoomController {
     }
 
     @GetMapping("/available")
-    public ResponseEntity<List<RoomDto>> getRooms(
+    public ResponseEntity<List<AvailableRoomDto>> getRooms(
             @RequestParam Long roomTypeId,
             @RequestParam LocalDateTime from,
             @RequestParam LocalDateTime to
     ) {
-        List<RoomDto> availableRooms = roomService.getAvailableRooms(roomTypeId, from, to);
+        List<AvailableRoomDto> availableRooms = roomService.getAvailableRooms(roomTypeId, from, to);
         return ResponseEntity.ok(availableRooms);
     }
 

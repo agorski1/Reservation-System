@@ -7,11 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class RoomDto {
+public class AvailableRoomDto {
     private Long id;
     private Long number;
-    private String name;
-    private Integer capacity;
-    private float pricePerNight;
-    private String status;
 }
