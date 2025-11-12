@@ -44,4 +44,6 @@ public interface RoomTypeDao extends JpaRepository<RoomTypeEntity, Long> {
                                                 @Param("minPrice") BigDecimal minPrice,
                                                 @Param("maxPrice") BigDecimal maxPrice,
                                                 @Param("amenities")  List<String> amenities);
+
+    RoomTypeEntity findFirstByRtName(String name);
 }

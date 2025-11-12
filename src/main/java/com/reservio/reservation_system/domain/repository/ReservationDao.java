@@ -45,5 +45,29 @@ public interface ReservationDao extends JpaRepository<ReservationEntity, Long> {
             @Param("endDate") LocalDate endDate
             );
 
+    @Query("""
+        SELECT r FROM ReservationEntity r
+        WHERE (:from IS NULL OR r.rsvCheckInDate >= :from)
+          AND (:to IS NULL OR r.rsvCheckOutDate <= :to)
+          AND (:email IS NULL OR LOWER(r.usr.usrEmail) LIKE LOWER(CONCAT('%', :email, '%')))
+          AND (:phone IS NULL OR r.usr.usrPhoneNumber LIKE CONCAT('%', :phone, '%'))
+    """)
+    List<ReservationEntity> findAllFiltered(@Param("from") LocalDateTime from,
+                                            @Param("to") LocalDateTime to,
+                                            @Param("email") String email,
+                                            @Param("phone") String phone);
 
+    @Query("""
+        SELECT r FROM ReservationEntity r
+        WHERE r.rsvs.rsvsName = 'PENDING'
+          AND (:from IS NULL OR r.rsvCheckInDate >= :from)
+          AND (:to IS NULL OR r.rsvCheckOutDate <= :to)
+          AND (:email IS NULL OR LOWER(r.usr.usrEmail) LIKE LOWER(CONCAT('%', :email, '%')))
+          AND (:phone IS NULL OR r.usr.usrPhoneNumber LIKE CONCAT('%', :phone, '%'))
+    """)
+    List<ReservationEntity> findPendingFiltered(@Param("from") LocalDateTime from,
+                                                @Param("to") LocalDateTime to,
+                                                @Param("email") String email,
+                                                @Param("phone") String phone);
 }
+

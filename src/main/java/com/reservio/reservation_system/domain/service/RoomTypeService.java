@@ -49,12 +49,16 @@ public class RoomTypeService {
         return roomTypeMapper.toAvailableRoomTypeDtos(roomTypes, totalPricesById);
     }
 
+    public RoomTypeDto findRoomTypeById(String name) {
+        RoomTypeEntity roomType = roomTypeDao.findFirstByRtName(name);
+
+        return roomTypeMapper.toRoomTypeDto(roomType);
+    }
 
     public List<RoomTypeDto> getRoomTypes() {
         List<RoomTypeEntity> roomTypes = roomTypeDao.findAll();
 
         return roomTypeMapper.toRoomTypeDtoList(roomTypes);
-
     }
 
     private BigDecimal calculateTotalPrice(RoomTypeEntity entity, LocalDateTime from, LocalDateTime to) {

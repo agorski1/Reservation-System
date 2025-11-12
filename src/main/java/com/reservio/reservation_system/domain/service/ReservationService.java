@@ -9,6 +9,7 @@ import com.reservio.reservation_system.infrastructure.entity.ReservationEntity;
 import com.reservio.reservation_system.infrastructure.entity.ReservationStatusEntity;
 import com.reservio.reservation_system.infrastructure.entity.RoomEntity;
 import com.reservio.reservation_system.infrastructure.entity.UserEntity;
+import com.reservio.reservation_system.presentation.dto.reservation.ReservationDto;
 import com.reservio.reservation_system.presentation.dto.reservation.RoomReservationResponseDto;
 import com.reservio.reservation_system.presentation.dto.reservation.UserReservationDto;
 import com.reservio.reservation_system.presentation.mapper.ReservationMapper;
@@ -73,6 +74,8 @@ public class ReservationService {
     @Transactional
     public void cancelReservation(String userEmail, Long reservationId) {
         //TODO dopisac ze jest jakis termin na cancel po ktorym nie ma juz zwrotow pieniedzy ...
+        // dodatkowo nie delete nie moze byc i nie tez sprawdzenei daty kiedy jest usuwana bo nie moze byc usuwana z przeszlosci
+        //  i tyle
         Long userId = getUserIdByUserEmail(userEmail);
         ReservationEntity reservation = reservationDao.findById(reservationId)
                 .orElseThrow(() -> new IllegalArgumentException("Reservation not found with ID " + reservationId));
@@ -118,5 +121,21 @@ public class ReservationService {
         return user.getId();
     }
 
+    public List<ReservationDto> getFilteredReservations(
+            boolean all,
+            LocalDateTime from,
+            LocalDateTime to,
+            String email,
+            String phone
+    ) {
+        List<ReservationEntity> reservations;
 
+        if (all) {
+            reservations = reservationDao.findAllFiltered(from, to, email, phone);
+        } else {
+            reservations = reservationDao.findPendingFiltered(from, to, email, phone);
+        }
+
+        return reservationMapper.toReservationDtos(reservations);
+    }
 }

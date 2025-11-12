@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Getter
 @Setter
@@ -17,4 +18,5 @@ public class RoomTypeDto {
     private int capacity;
     private BigDecimal pricePerNight;
     private String description;
+    private List<String> amenities;
 }

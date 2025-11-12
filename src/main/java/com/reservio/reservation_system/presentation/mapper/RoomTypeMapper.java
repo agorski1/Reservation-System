@@ -33,7 +33,7 @@ public interface RoomTypeMapper {
             return Collections.emptyList();
         }
         return roomTypeEntities.stream()
-                .filter(entity -> entity.getId() != null) // Uniknij null ID
+                .filter(entity -> entity.getId() != null)
                 .map(entity -> {
                     BigDecimal totalPrice = totalPricesById.getOrDefault(entity.getId(), BigDecimal.ZERO);
                     return toAvailableRoomTypeDto(entity, totalPrice);
@@ -47,6 +47,7 @@ public interface RoomTypeMapper {
     @Mapping(target = "capacity", source = "entity.rtCapacity")
     @Mapping(target = "pricePerNight", source = "entity.rtPricePerNight")
     @Mapping(target = "description", source = "entity.rtDescription")
+    @Mapping(target = "amenities", source = "entity.roomTypeAmenities", qualifiedByName = "mapAmenityNames")
     RoomTypeDto toRoomTypeDto(RoomTypeEntity entity);
 
     List<RoomTypeDto> toRoomTypeDtoList(List<RoomTypeEntity> entities);

@@ -1,6 +1,7 @@
 package com.reservio.reservation_system.presentation.controller;
 
 import com.reservio.reservation_system.domain.service.ReservationService;
+import com.reservio.reservation_system.presentation.dto.reservation.ReservationDto;
 import com.reservio.reservation_system.presentation.dto.reservation.RoomReservationRequestDto;
 import com.reservio.reservation_system.presentation.dto.reservation.RoomReservationResponseDto;
 import com.reservio.reservation_system.presentation.dto.reservation.UserReservationDto;
@@ -10,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -54,6 +56,18 @@ public class ReservationController {
         return ResponseEntity.ok().build();
     }
 
+
+    @GetMapping()
+    public ResponseEntity<List<ReservationDto>> getReservations(
+            @RequestParam(required = false, defaultValue = "false") boolean all,
+            @RequestParam(required = false) LocalDateTime from,
+            @RequestParam(required = false) LocalDateTime to,
+            @RequestParam(required = false) String phone,
+            @RequestParam(required = false) String email
+    ) {
+        List<ReservationDto> reservations = reservationService.getReservations(all, from, to, phone, email);
+        return ResponseEntity.ok(reservations);
+    }
 //    @GetMapping("/check-availability")
 //    public ResponseEntity<Boolean> checkAvailability(@RequestParam Long deskId, @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime from, @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime to) {
 //
