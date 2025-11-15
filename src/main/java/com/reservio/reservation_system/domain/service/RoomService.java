@@ -2,6 +2,7 @@ package com.reservio.reservation_system.domain.service;
 
 import com.reservio.reservation_system.domain.repository.ReservationDao;
 import com.reservio.reservation_system.domain.repository.RoomDao;
+import com.reservio.reservation_system.domain.repository.RoomTypeDao;
 import com.reservio.reservation_system.infrastructure.entity.ReservationEntity;
 import com.reservio.reservation_system.infrastructure.entity.RoomEntity;
 import com.reservio.reservation_system.presentation.dto.room.RoomDto;
@@ -12,9 +13,10 @@ import com.reservio.reservation_system.presentation.dto.room.AvailableRoomDto;
 import com.reservio.reservation_system.presentation.dto.room.RoomSlotDto;
 import com.reservio.reservation_system.presentation.mapper.ReservationMapper;
 import com.reservio.reservation_system.presentation.mapper.RoomMapper;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -29,6 +31,7 @@ public class RoomService {
     private final ReservationDao reservationDao;
     private final RoomMapper roomMapper;
     private final ReservationMapper reservationMapper;
+    private final RoomTypeDao roomTypeDao;
 
     public List<RoomDto> getAllRoomsWithDetails() {
         List<RoomEntity> rooms = roomDao.findAll();
@@ -102,11 +105,11 @@ public class RoomService {
     }
 
 
-    public RoomDto updateRoomPricePerNight(Long roomId, Float newPrice) {
+    public RoomDto updateRoomPricePerNight(Long roomId, BigDecimal newPrice) {
         RoomEntity room = roomDao.findFirstById(roomId)
                 .orElseThrow(() -> new IllegalArgumentException("Can't find room with id " + roomId));
 
-        room.setRM(newPrice);
+        room.getRt().setRtPricePerNight(newPrice);
 
         RoomEntity updatedRoom = roomDao.save(room);
         return roomMapper.toRoomDto(updatedRoom);
@@ -131,7 +134,17 @@ public class RoomService {
     public List<AvailableRoomDto> getAvailableRooms(Long roomTypeId,
                                                     LocalDateTime from,
                                                     LocalDateTime to) {
-        return null;
+        if (roomTypeId == null || !roomTypeDao.existsById(roomTypeId)) {
+            throw new IllegalArgumentException("Room type with id " + roomTypeId + " does not exist");
+        }
+
+        if (from == null || to == null || from.isAfter(to) || from.equals(to)) {
+            throw new IllegalArgumentException("Invalid date range: from must be before to and not equal");
+        }
+
+        List<RoomEntity> rooms = roomDao.findAvailableRooms(roomTypeId, from, to);
+
+        return roomMapper.toAvailableRoomDtoList(rooms);
     }
 }
 

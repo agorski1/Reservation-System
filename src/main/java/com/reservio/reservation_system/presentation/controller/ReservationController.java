@@ -1,10 +1,7 @@
 package com.reservio.reservation_system.presentation.controller;
 
 import com.reservio.reservation_system.domain.service.ReservationService;
-import com.reservio.reservation_system.presentation.dto.reservation.ReservationDto;
-import com.reservio.reservation_system.presentation.dto.reservation.RoomReservationRequestDto;
-import com.reservio.reservation_system.presentation.dto.reservation.RoomReservationResponseDto;
-import com.reservio.reservation_system.presentation.dto.reservation.UserReservationDto;
+import com.reservio.reservation_system.presentation.dto.reservation.*;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -36,7 +33,7 @@ public class ReservationController {
         return ResponseEntity.ok(userReservations);
     }
 
-    @DeleteMapping("/{reservationId}")
+    @PatchMapping("/{reservationId}/cancel")
     public ResponseEntity<Void> cancelReservation(@PathVariable Long reservationId, Principal principal) {
         String usrEmail = principal.getName();
         reservationService.cancelReservation(usrEmail, reservationId);
@@ -47,7 +44,7 @@ public class ReservationController {
     @PostMapping()
     public ResponseEntity<Void> reserveRoom(@Valid @RequestBody RoomReservationRequestDto dto, Principal principal) {
         String usrEmail = principal.getName();
-        RoomReservationResponseDto roomReservationResponseDto = reservationService.reserveRoom(dto.getDeskId(),
+        RoomReservationResponseDto roomReservationResponseDto = reservationService.makeReservationForUser(dto.getRoomId(),
                 usrEmail,
                 dto.getGuestCount(),
                 dto.getFrom(),
@@ -58,21 +55,15 @@ public class ReservationController {
 
 
     @GetMapping()
-    public ResponseEntity<List<ReservationDto>> getReservations(
-            @RequestParam(required = false, defaultValue = "false") boolean all,
-            @RequestParam(required = false) LocalDateTime from,
-            @RequestParam(required = false) LocalDateTime to,
-            @RequestParam(required = false) String phone,
-            @RequestParam(required = false) String email
-    ) {
-        List<ReservationDto> reservations = reservationService.getReservations(all, from, to, phone, email);
+    public ResponseEntity<List<ReservationDto>> getReservations(@RequestParam(required = false, defaultValue = "false") boolean all, @RequestParam(required = false) LocalDateTime from, @RequestParam(required = false) LocalDateTime to, @RequestParam(required = false) String phone, @RequestParam(required = false) String email) {
+        List<ReservationDto> reservations = reservationService.getFilteredReservations(all, from, to, phone, email);
         return ResponseEntity.ok(reservations);
     }
-//    @GetMapping("/check-availability")
-//    public ResponseEntity<Boolean> checkAvailability(@RequestParam Long deskId, @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime from, @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime to) {
-//
-//        boolean available = reservationService.isDeskAvailable(deskId, from, to);
-//        return ResponseEntity.ok(available);
-//    }
+
+    @PostMapping("/manual")
+    public ResponseEntity<Void> createManualReservation(@RequestBody ManualReservationRequestDto dto) {
+        reservationService.createManualReservation(dto.getFirstName(), dto.getLastName(), dto.getEmail(), dto.getPhoneNumber(), dto.getGuestCount(), dto.getRoomId(), dto.getCheckInDate(), dto.getCheckOutDate());
+        return ResponseEntity.ok().build();
+    }
 
 }

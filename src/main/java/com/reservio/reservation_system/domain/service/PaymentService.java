@@ -53,9 +53,9 @@ public class PaymentService {
 
         String statusName;
         if (totalPaid.compareTo(BigDecimal.ZERO) == 0) {
-            statusName = "PENDING_PAYMENT";
+            statusName = "PENDING";
         } else if (totalPaid.compareTo(roomPrice) < 0) {
-            statusName = "PARTIALLY_PAID";
+            statusName = "PARTIAL-PAID";
         } else {
             statusName = "PAID";
         }

@@ -23,5 +23,4 @@ public class UserRoleEntity {
 
     @OneToMany(mappedBy = "ur")
     private Set<UserEntity> users = new LinkedHashSet<>();
-
 }

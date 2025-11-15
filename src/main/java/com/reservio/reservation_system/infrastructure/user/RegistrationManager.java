@@ -32,7 +32,8 @@ public class RegistrationManager {
         user.setUsrPassword(encodedPassword);
         user.setUsrRegistrationDate(LocalDate.now());
 
-        UserRoleEntity userRole = userRoleDao.findByUrName("Customer");
+        UserRoleEntity userRole = userRoleDao.findByUrName("Customer")
+                .orElseThrow(() -> new IllegalArgumentException("User role 'Customer' not found"));
         if (userRole == null) {
             throw new IllegalStateException("Default role 'Customer' not found");
         }

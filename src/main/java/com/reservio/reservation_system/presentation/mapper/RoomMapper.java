@@ -2,6 +2,7 @@ package com.reservio.reservation_system.presentation.mapper;
 
 import com.reservio.reservation_system.infrastructure.entity.ReservationEntity;
 import com.reservio.reservation_system.infrastructure.entity.RoomEntity;
+import com.reservio.reservation_system.presentation.dto.room.AvailableRoomDto;
 import com.reservio.reservation_system.presentation.dto.room.RoomDetailsDto;
 import com.reservio.reservation_system.presentation.dto.room.RoomDto;
 import com.reservio.reservation_system.presentation.dto.room.RoomSlotDto;
@@ -33,5 +34,11 @@ public interface RoomMapper {
     RoomDto toRoomDto(RoomEntity room);
 
     List<RoomDto> toRoomDtoList(List<RoomEntity> rooms);
+
+    @Mapping(source = "id", target = "id")
+    @Mapping(source = "rmNumber", target = "number")
+    AvailableRoomDto toAvailableRoomDto(RoomEntity room);
+
+    List<AvailableRoomDto> toAvailableRoomDtoList(List<RoomEntity> rooms);
 }
 

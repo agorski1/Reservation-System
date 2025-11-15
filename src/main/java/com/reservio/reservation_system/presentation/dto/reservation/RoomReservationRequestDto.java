@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @Setter
 @AllArgsConstructor
 public class RoomReservationRequestDto {
-    private Long deskId;
+    private Long roomId;
     private Short guestCount;
     private LocalDateTime from;
     private LocalDateTime to;

@@ -69,5 +69,16 @@ public interface ReservationDao extends JpaRepository<ReservationEntity, Long> {
                                                 @Param("to") LocalDateTime to,
                                                 @Param("email") String email,
                                                 @Param("phone") String phone);
+
+
+    @Query("""
+    SELECT r FROM ReservationEntity r
+    WHERE r.rsvCheckInDate < :end
+      AND r.rsvCheckOutDate > :start
+""")
+    List<ReservationEntity> findAllByCheckInOutDates(
+            @Param("start") LocalDateTime start,
+            @Param("end") LocalDateTime end
+    );
 }
 

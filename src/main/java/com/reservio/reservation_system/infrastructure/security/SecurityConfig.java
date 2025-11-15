@@ -27,7 +27,13 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/hd/auth/register", "/hd/auth/login", "/hd/room-type/available").permitAll()
+                        .requestMatchers(
+                                "/hd/auth/register",
+                                "/hd/auth/login",
+                                "/hd/room-type/available",
+                                "/hd/rooms/available"
+                        ).permitAll()
+                        .requestMatchers("/hd/reservations/my/**").hasRole("Customer")
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
