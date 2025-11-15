@@ -3,9 +3,9 @@ package com.reservio.reservation_system.domain.service;
 import com.reservio.reservation_system.domain.exception.ReservationException;
 import com.reservio.reservation_system.domain.repository.*;
 import com.reservio.reservation_system.infrastructure.entity.*;
+import com.reservio.reservation_system.presentation.dto.reservation.UserReservationDto;
 import com.reservio.reservation_system.presentation.dto.reservation.ReservationDto;
 import com.reservio.reservation_system.presentation.dto.reservation.RoomReservationResponseDto;
-import com.reservio.reservation_system.presentation.dto.reservation.UserReservationDto;
 import com.reservio.reservation_system.presentation.mapper.ReservationMapper;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
@@ -34,7 +34,7 @@ public class ReservationService {
             String statusName
     ) {
         if (reservationDao.existsOverlappingReservation(roomId, from, to)) {
-            throw new IllegalStateException("Chosen room has already been reserved");
+            throw new ReservationException("Chosen room has already been reserved");
         }
 
         RoomEntity room = roomDao.findById(roomId)
@@ -66,13 +66,13 @@ public class ReservationService {
         }
 
         String currentStatus = reservation.getRsvs().getRsvsName();
-        List<String> cancellableStatuses = List.of("PENDING", "PARTIAL-PAID", "PAID");
+        List<String> cancellableStatuses = List.of("Pending", "Partial-Paid", "Paid");
 
         if(!cancellableStatuses.contains(currentStatus)) {
             throw new SecurityException("You are not allowed to cancel this reservation");
         }
 
-        ReservationStatusEntity cancelledStatus = reservationStatusDao.findByRsvsName("CANCELLED")
+        ReservationStatusEntity cancelledStatus = reservationStatusDao.findByRsvsName("Cancelled")
                 .orElseThrow(() -> new SecurityException("Reservation cancelled"));
 
         reservation.setRsvs(cancelledStatus);
@@ -84,7 +84,7 @@ public class ReservationService {
     public List<UserReservationDto> getCurrentUserReservations(String userEmail) {
         Long userId = getUserIdByUserEmail(userEmail);
         LocalDateTime now = LocalDateTime.now();
-        List<ReservationEntity> reservations = reservationDao.findAllByUsrIdAndRsvCheckOutDateAfter(userId, now);
+        List<ReservationEntity> reservations = reservationDao.findCurrentReservations(userId, now);
 
         return reservationMapper.toUserReservationDtos(reservations);
     }
@@ -96,18 +96,18 @@ public class ReservationService {
         return reservationMapper.toUserReservationDtos(reservations);
     }
 
-    public boolean isDeskAvailable(Long deskId, LocalDateTime from, LocalDateTime to) {
-        if (from.isBefore(LocalDateTime.now()) || to.isBefore(LocalDateTime.now())) {
-            throw new ReservationException("Rezerwacja nie może być w przeszłości");
-        }
-
-        if (!from.isBefore(to)) {
-            throw new ReservationException("'from' musi być przed 'to'");
-        }
-
-        boolean existsOverlap = reservationDao.existsOverlappingReservation(deskId, from, to);
-        return !existsOverlap;
-    }
+//    public boolean isDeskAvailable(Long deskId, LocalDateTime from, LocalDateTime to) {
+//        if (from.isBefore(LocalDateTime.now()) || to.isBefore(LocalDateTime.now())) {
+//            throw new ReservationException("Rezerwacja nie może być w przeszłości");
+//        }
+//
+//        if (!from.isBefore(to)) {
+//            throw new ReservationException("'from' musi być przed 'to'");
+//        }
+//
+//        boolean existsOverlap = reservationDao.existsOverlappingReservation(deskId, from, to);
+//        return !existsOverlap;
+//    }
 
 
     private Long getUserIdByUserEmail(String userEmail) {
@@ -194,7 +194,7 @@ public class ReservationService {
                 guestCount,
                 from,
                 to,
-                "PENDING"
+                "Pending"
         );
 
         return new RoomReservationResponseDto(
@@ -202,7 +202,8 @@ public class ReservationService {
                 saved.getRm().getId(),
                 saved.getRsvGuestCount(),
                 saved.getRsvCheckInDate(),
-                saved.getRsvCheckOutDate()
+                saved.getRsvCheckOutDate(),
+                saved.getRsvs().getRsvsName()
         );
     }
 

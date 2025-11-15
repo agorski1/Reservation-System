@@ -15,4 +15,5 @@ public class RoomReservationResponseDto {
     private Short guestCount;
     private LocalDateTime from;
     private LocalDateTime to;
+    private String status;
 }

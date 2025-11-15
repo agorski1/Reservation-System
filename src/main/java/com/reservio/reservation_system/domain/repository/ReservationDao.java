@@ -13,12 +13,13 @@ import java.util.List;
 @Repository
 public interface ReservationDao extends JpaRepository<ReservationEntity, Long> {
     @Query("""
-       SELECT CASE WHEN COUNT(r) > 0 THEN true ELSE false END
-       FROM ReservationEntity r
-       WHERE r.rm.id = :roomId
-         AND r.rsvCheckInDate < :endDate
-         AND r.rsvCheckOutDate > :startDate
-       """)
+
+            SELECT CASE WHEN COUNT(r) > 0 THEN true ELSE false END
+    FROM ReservationEntity r
+        WHERE r.rm.id = :roomId
+        AND r.rsvCheckInDate < :endDate
+        AND r.rsvCheckOutDate > :startDate
+        AND r.rsvs.rsvsName IN ('Pending', 'Confirmed', 'Partial-paid', 'Paid')    \s""")
     boolean existsOverlappingReservation(@Param("roomId") Long roomId,
                                          @Param("startDate") LocalDateTime startDate,
                                          @Param("endDate") LocalDateTime endDate);
@@ -31,6 +32,14 @@ public interface ReservationDao extends JpaRepository<ReservationEntity, Long> {
             LocalDateTime end, LocalDateTime start);
 
     List<ReservationEntity> findAllByUsrIdAndRsvCheckOutDateAfter(Long usrId, LocalDateTime now);
+
+    @Query("""
+    SELECT r FROM ReservationEntity r
+    WHERE r.usr.id = :usrId
+            AND r.rsvCheckOutDate > :now
+            AND r.rsvs.rsvsName NOT IN ('Cancelled', 'Rejected', 'Completed')
+            """)
+    List<ReservationEntity> findCurrentReservations(Long usrId, LocalDateTime now);
 
     List<ReservationEntity> findAllByUsrId(Long usrId);
 

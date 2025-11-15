@@ -44,7 +44,8 @@ public class ReservationController {
     @PostMapping()
     public ResponseEntity<Void> reserveRoom(@Valid @RequestBody RoomReservationRequestDto dto, Principal principal) {
         String usrEmail = principal.getName();
-        RoomReservationResponseDto roomReservationResponseDto = reservationService.makeReservationForUser(dto.getRoomId(),
+        RoomReservationResponseDto roomReservationResponseDto = reservationService.makeReservationForUser(
+                dto.getRoomId(),
                 usrEmail,
                 dto.getGuestCount(),
                 dto.getFrom(),

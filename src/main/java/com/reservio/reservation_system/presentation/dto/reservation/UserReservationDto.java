@@ -14,4 +14,5 @@ public class UserReservationDto {
     private Long roomNumber;
     private LocalDateTime from;
     private LocalDateTime to;
+    private String status;
 }

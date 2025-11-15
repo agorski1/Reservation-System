@@ -1,9 +1,9 @@
 package com.reservio.reservation_system.presentation.mapper;
 
 import com.reservio.reservation_system.infrastructure.entity.ReservationEntity;
+import com.reservio.reservation_system.presentation.dto.reservation.UserReservationDto;
 import com.reservio.reservation_system.presentation.dto.reservation.ReservationDto;
 import com.reservio.reservation_system.presentation.dto.reservation.RoomReservationDto;
-import com.reservio.reservation_system.presentation.dto.reservation.UserReservationDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -15,6 +15,7 @@ public interface ReservationMapper {
     @Mapping(source = "rm.rmNumber", target = "roomNumber")
     @Mapping(source = "rsvCheckInDate", target = "from")
     @Mapping(source = "rsvCheckOutDate", target = "to")
+    @Mapping(source = "rsvs.rsvsName", target = "status")
     UserReservationDto toUserReservationDto(ReservationEntity entity);
     List<UserReservationDto> toUserReservationDtos(List<ReservationEntity> entities);
 
