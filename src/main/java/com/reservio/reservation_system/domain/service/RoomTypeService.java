@@ -49,8 +49,8 @@ public class RoomTypeService {
         return roomTypeMapper.toAvailableRoomTypeDtos(roomTypes, totalPricesById);
     }
 
-    public RoomTypeDto findRoomTypeById(String name) {
-        RoomTypeEntity roomType = roomTypeDao.findFirstByRtName(name);
+    public RoomTypeDto findRoomTypeById(Long id) {
+        RoomTypeEntity roomType = roomTypeDao.findFirstById(id);
 
         return roomTypeMapper.toRoomTypeDto(roomType);
     }

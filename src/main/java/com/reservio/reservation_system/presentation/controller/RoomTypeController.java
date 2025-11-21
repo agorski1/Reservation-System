@@ -2,12 +2,10 @@ package com.reservio.reservation_system.presentation.controller;
 
 import com.reservio.reservation_system.domain.service.RoomTypeService;
 import com.reservio.reservation_system.presentation.dto.room.AvailableRoomTypeDto;
+import com.reservio.reservation_system.presentation.dto.room.RoomTypeDto;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -18,6 +16,12 @@ import java.util.List;
 @AllArgsConstructor
 public class RoomTypeController {
     private final RoomTypeService roomTypeService;
+
+    @GetMapping
+    public ResponseEntity<List<RoomTypeDto>> getAllRoomTypes() {
+        List<RoomTypeDto> roomTypes = roomTypeService.getRoomTypes();
+        return ResponseEntity.ok(roomTypes);
+    }
 
     @GetMapping("/available")
     public ResponseEntity<List<AvailableRoomTypeDto>> getAvailableRoomTypes(
@@ -34,6 +38,12 @@ public class RoomTypeController {
                 minPrice,
                 maxPrice,
                 amenities));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<RoomTypeDto> getRoomTypeById(@PathVariable Long id) {
+        RoomTypeDto roomType = roomTypeService.findRoomTypeById(id);
+        return ResponseEntity.ok(roomType);
     }
 
 }

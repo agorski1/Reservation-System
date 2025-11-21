@@ -46,4 +46,6 @@ public interface RoomTypeDao extends JpaRepository<RoomTypeEntity, Long> {
                                                 @Param("amenities")  List<String> amenities);
 
     RoomTypeEntity findFirstByRtName(String name);
+
+    RoomTypeEntity findFirstById(Long id);
 }

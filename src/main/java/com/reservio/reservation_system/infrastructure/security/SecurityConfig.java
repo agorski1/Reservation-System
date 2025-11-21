@@ -29,13 +29,14 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth .requestMatchers(
                                 "/hd/auth/register",
                                 "/hd/auth/login",
-                                "/hd/room-type/available",
-                                "/hd/rooms/available/**"
+                                "/hd/room-type/**"
                         ).permitAll()
                         .requestMatchers("/hd/reservations/my/**").hasRole("Customer")
                         .requestMatchers("/hd/reservations").hasRole("Customer")
                         .requestMatchers("/hd/reservations/*/cancel").hasRole("Customer")
                         .requestMatchers("/hd/payments/process").hasRole("Customer")
+                        .requestMatchers("hd/reservations").hasRole("Customer")
+                        .requestMatchers("hd/rooms/available").hasRole("Customer")
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
