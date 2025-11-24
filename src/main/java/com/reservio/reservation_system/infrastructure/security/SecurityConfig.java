@@ -2,6 +2,7 @@ package com.reservio.reservation_system.infrastructure.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -26,17 +27,24 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                .authorizeHttpRequests(auth -> auth .requestMatchers(
-                                "/hd/auth/register",
-                                "/hd/auth/login",
-                                "/hd/room-type/**"
-                        ).permitAll()
-                        .requestMatchers("/hd/reservations/my/**").hasRole("Customer")
-                        .requestMatchers("/hd/reservations").hasRole("Customer")
-                        .requestMatchers("/hd/reservations/*/cancel").hasRole("Customer")
-                        .requestMatchers("/hd/payments/process").hasRole("Customer")
-                        .requestMatchers("hd/reservations").hasRole("Customer")
-                        .requestMatchers("hd/rooms/available").hasRole("Customer")
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/hd/auth/register", "/hd/auth/login", "/hd/room-type/**")
+                        .permitAll()
+
+                        .requestMatchers(HttpMethod.POST, "/hd/reservations")
+                        .hasRole("Customer")
+
+                        .requestMatchers(HttpMethod.PATCH, "/hd/reservations/*/cancel")
+                        .hasRole("Customer")
+
+                        .requestMatchers(HttpMethod.POST, "/hd/payments/process")
+                        .hasRole("Customer")
+
+                        .requestMatchers("/hd/reservations/my/current", "/hd/rooms/available")
+                        .hasRole("Customer")
+
+                        .requestMatchers(HttpMethod.GET, "/hd/reservations/*").hasRole("Customer")
+
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -49,7 +57,7 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(List.of("http://localhost:5173")); // frontend
-        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true); // jeśli przesyłasz cookies / tokeny
 

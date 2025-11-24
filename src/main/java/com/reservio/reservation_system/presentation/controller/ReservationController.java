@@ -33,6 +33,18 @@ public class ReservationController {
         return ResponseEntity.ok(userReservations);
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<UserReservationDto> getReservationById(
+            @PathVariable Long id,
+            Principal principal) {
+
+        String userEmail = principal.getName();
+
+        UserReservationDto dto = reservationService.getReservationByIdForUser(id, userEmail);
+
+        return ResponseEntity.ok(dto);
+    }
+
     @PatchMapping("/{reservationId}/cancel")
     public ResponseEntity<Void> cancelReservation(@PathVariable Long reservationId, Principal principal) {
         String usrEmail = principal.getName();
@@ -42,16 +54,13 @@ public class ReservationController {
     }
 
     @PostMapping()
-    public ResponseEntity<Void> reserveRoom(@Valid @RequestBody RoomReservationRequestDto dto, Principal principal) {
-        String usrEmail = principal.getName();
-        RoomReservationResponseDto roomReservationResponseDto = reservationService.makeReservationForUser(
-                dto.getRoomId(),
-                usrEmail,
-                dto.getGuestCount(),
-                dto.getFrom(),
-                dto.getTo());
+    public ResponseEntity<RoomReservationResponseDto> reserveRoom(@Valid @RequestBody RoomReservationRequestDto dto, Principal principal) {
 
-        return ResponseEntity.ok().build();
+        String usrEmail = principal.getName();
+
+        RoomReservationResponseDto response = reservationService.makeReservationForUser(dto.getRoomId(), usrEmail, dto.getGuestCount(), dto.getFrom(), dto.getTo());
+
+        return ResponseEntity.ok(response);
     }
 
 

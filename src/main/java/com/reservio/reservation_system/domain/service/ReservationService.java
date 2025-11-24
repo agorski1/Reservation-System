@@ -197,14 +197,18 @@ public class ReservationService {
                 "Pending"
         );
 
-        return new RoomReservationResponseDto(
-                saved.getId(),
-                saved.getRm().getId(),
-                saved.getRsvGuestCount(),
-                saved.getRsvCheckInDate(),
-                saved.getRsvCheckOutDate(),
-                saved.getRsvs().getRsvsName()
-        );
+        return reservationMapper.toRoomReservationResponseDto(saved);
     }
 
+    @Transactional()
+    public UserReservationDto getReservationByIdForUser(Long reservationId, String userEmail) {
+        Long userId = getUserIdByUserEmail(userEmail);
+
+        ReservationEntity entity = reservationDao.findByIdAndUserId(reservationId, userId)
+                .orElseThrow(() -> new SecurityException(
+                        "Nie masz dostępu do tej rezerwacji"
+                ));
+
+        return reservationMapper.toUserReservationDto(entity);
+    }
 }

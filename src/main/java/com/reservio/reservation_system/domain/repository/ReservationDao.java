@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ReservationDao extends JpaRepository<ReservationEntity, Long> {
@@ -88,6 +89,13 @@ public interface ReservationDao extends JpaRepository<ReservationEntity, Long> {
     List<ReservationEntity> findAllByCheckInOutDates(
             @Param("start") LocalDateTime start,
             @Param("end") LocalDateTime end
+    );
+
+    @Query("SELECT r FROM ReservationEntity r " +
+            "WHERE r.id = :reservationId AND r.usr.id = :userId")
+    Optional<ReservationEntity> findByIdAndUserId(
+            @Param("reservationId") Long reservationId,
+            @Param("userId") Long userId
     );
 }
 
