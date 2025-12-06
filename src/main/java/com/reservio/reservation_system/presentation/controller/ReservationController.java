@@ -63,7 +63,6 @@ public class ReservationController {
         return ResponseEntity.ok(response);
     }
 
-
     @GetMapping()
     public ResponseEntity<List<ReservationDto>> getReservations(@RequestParam(required = false, defaultValue = "false") boolean all, @RequestParam(required = false) LocalDateTime from, @RequestParam(required = false) LocalDateTime to, @RequestParam(required = false) String phone, @RequestParam(required = false) String email) {
         List<ReservationDto> reservations = reservationService.getFilteredReservations(all, from, to, phone, email);

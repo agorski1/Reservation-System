@@ -52,4 +52,7 @@ public class ReservationEntity {
     @JoinColumn(name = "RSVS_ID", nullable = false)
     private ReservationStatusEntity rsvs;
 
+    @Column(name = "RSV_CREATED_AT", nullable = false, updatable = false)
+    private LocalDateTime createdAt = LocalDateTime.now();
+
 }

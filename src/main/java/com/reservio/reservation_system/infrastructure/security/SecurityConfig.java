@@ -45,6 +45,16 @@ public class SecurityConfig {
 
                         .requestMatchers(HttpMethod.GET, "/hd/reservations/*").hasRole("Customer")
 
+                        .requestMatchers(HttpMethod.GET, "/hd/dashboard/today").hasRole("Employee")
+
+                        .requestMatchers(HttpMethod.GET, "/hd/rooms").hasRole("Employee")
+
+                        .requestMatchers(HttpMethod.POST, "/hd/rooms/*/status").hasRole("Employee")
+
+//                        .requestMatchers(HttpMethod.POST, "/hd/rooms/*/price").hasRole("Admin")
+
+                        .requestMatchers(HttpMethod.GET, "/hd/reservations").hasRole("Employee")
+
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -56,10 +66,10 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:5173")); // frontend
+        configuration.setAllowedOrigins(List.of("http://localhost:5173"));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
-        configuration.setAllowCredentials(true); // jeśli przesyłasz cookies / tokeny
+        configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);

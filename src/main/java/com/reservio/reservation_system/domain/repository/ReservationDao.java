@@ -14,16 +14,17 @@ import java.util.Optional;
 @Repository
 public interface ReservationDao extends JpaRepository<ReservationEntity, Long> {
     @Query("""
-
-            SELECT CASE WHEN COUNT(r) > 0 THEN true ELSE false END
-    FROM ReservationEntity r
-        WHERE r.rm.id = :roomId
-        AND r.rsvCheckInDate < :endDate
-        AND r.rsvCheckOutDate > :startDate
-        AND r.rsvs.rsvsName IN ('Pending', 'Confirmed', 'Partial-paid', 'Paid')    \s""")
+            
+                    SELECT CASE WHEN COUNT(r) > 0 THEN true ELSE false END
+            FROM ReservationEntity r
+                WHERE r.rm.id = :roomId
+                AND r.rsvCheckInDate < :endDate
+                AND r.rsvCheckOutDate > :startDate
+                AND r.rsvs.rsvsName IN ('Pending', 'Confirmed', 'Partial-paid', 'Paid')    \s""")
     boolean existsOverlappingReservation(@Param("roomId") Long roomId,
                                          @Param("startDate") LocalDateTime startDate,
                                          @Param("endDate") LocalDateTime endDate);
+
     List<ReservationEntity> findAllByRmIdAndRsvCheckOutDateAfter(Long roomId, LocalDateTime now);
 
     List<ReservationEntity> findAllByRmIdAndRsvCheckInDateLessThanEqualAndRsvCheckOutDateGreaterThanEqual
@@ -35,10 +36,10 @@ public interface ReservationDao extends JpaRepository<ReservationEntity, Long> {
     List<ReservationEntity> findAllByUsrIdAndRsvCheckOutDateAfter(Long usrId, LocalDateTime now);
 
     @Query("""
-    SELECT r FROM ReservationEntity r
-    WHERE r.usr.id = :usrId
-            AND r.rsvCheckOutDate > :now
-            AND r.rsvs.rsvsName NOT IN ('Cancelled', 'Rejected', 'Completed')
+            SELECT r FROM ReservationEntity r
+            WHERE r.usr.id = :usrId
+                    AND r.rsvCheckOutDate > :now
+                    AND r.rsvs.rsvsName NOT IN ('Cancelled', 'Rejected', 'Completed')
             """)
     List<ReservationEntity> findCurrentReservations(Long usrId, LocalDateTime now);
 
@@ -53,43 +54,54 @@ public interface ReservationDao extends JpaRepository<ReservationEntity, Long> {
     List<ReservationEntity> findReservaitonsWithApprovedPaymentsInPeriod(
             @Param("startDate") LocalDate startDate,
             @Param("endDate") LocalDate endDate
-            );
-
-    @Query("""
-        SELECT r FROM ReservationEntity r
-        WHERE (:from IS NULL OR r.rsvCheckInDate >= :from)
-          AND (:to IS NULL OR r.rsvCheckOutDate <= :to)
-          AND (:email IS NULL OR LOWER(r.usr.usrEmail) LIKE LOWER(CONCAT('%', :email, '%')))
-          AND (:phone IS NULL OR r.usr.usrPhoneNumber LIKE CONCAT('%', :phone, '%'))
-    """)
-    List<ReservationEntity> findAllFiltered(@Param("from") LocalDateTime from,
-                                            @Param("to") LocalDateTime to,
-                                            @Param("email") String email,
-                                            @Param("phone") String phone);
-
-    @Query("""
-        SELECT r FROM ReservationEntity r
-        WHERE r.rsvs.rsvsName = 'PENDING'
-          AND (:from IS NULL OR r.rsvCheckInDate >= :from)
-          AND (:to IS NULL OR r.rsvCheckOutDate <= :to)
-          AND (:email IS NULL OR LOWER(r.usr.usrEmail) LIKE LOWER(CONCAT('%', :email, '%')))
-          AND (:phone IS NULL OR r.usr.usrPhoneNumber LIKE CONCAT('%', :phone, '%'))
-    """)
-    List<ReservationEntity> findPendingFiltered(@Param("from") LocalDateTime from,
-                                                @Param("to") LocalDateTime to,
-                                                @Param("email") String email,
-                                                @Param("phone") String phone);
-
+    );
 
     @Query("""
     SELECT r FROM ReservationEntity r
-    WHERE r.rsvCheckInDate < :end
-      AND r.rsvCheckOutDate > :start
+    WHERE (:from IS NULL OR r.rsvCheckInDate >= :from OR :from IS NULL)
+      AND (:to IS NULL OR r.rsvCheckOutDate <= :to OR :to IS NULL)
+      AND (:email IS NULL OR LOWER(r.usr.usrEmail) LIKE LOWER(CONCAT('%', :email, '%')))
+      AND (:phone IS NULL OR r.usr.usrPhoneNumber LIKE CONCAT('%', :phone, '%'))
+    """)
+    List<ReservationEntity> findAllFiltered(
+            @Param("from") LocalDateTime from,
+            @Param("to") LocalDateTime to,
+            @Param("phone") String phone,
+            @Param("email") String email);
+
+    @Query("""
+    SELECT r FROM ReservationEntity r
+    WHERE r.rsvs.rsvsName IN ('Pending', 'Partial-Paid', 'Paid')
+      AND (:from IS NULL OR r.rsvCheckInDate >= :from OR :from IS NULL)
+      AND (:to IS NULL OR r.rsvCheckOutDate <= :to OR :to IS NULL)
+      AND (:email IS NULL OR LOWER(r.usr.usrEmail) LIKE LOWER(CONCAT('%', :email, '%')))
+      AND (:phone IS NULL OR r.usr.usrPhoneNumber LIKE CONCAT('%', :phone, '%'))
 """)
+    List<ReservationEntity> findPendingFiltered(
+            @Param("from") LocalDateTime from,
+            @Param("to") LocalDateTime to,
+            @Param("phone") String phone,
+            @Param("email") String email);
+
+
+
+    @Query("""
+                SELECT r FROM ReservationEntity r
+                WHERE r.rsvCheckInDate < :end
+                  AND r.rsvCheckOutDate > :start
+            """)
     List<ReservationEntity> findAllByCheckInOutDates(
             @Param("start") LocalDateTime start,
             @Param("end") LocalDateTime end
     );
+
+    @Query("""
+                SELECT COUNT(r) FROM ReservationEntity r
+                WHERE r.createdAt >= :start
+                  AND r.createdAt < :end
+            """)
+    long countCreatedToday(@Param("start") LocalDateTime start,
+                           @Param("end") LocalDateTime end);
 
     @Query("SELECT r FROM ReservationEntity r " +
             "WHERE r.id = :reservationId AND r.usr.id = :userId")

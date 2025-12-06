@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Repository
 public interface PaymentDao extends JpaRepository<PaymentEntity, Long> {
@@ -14,6 +15,20 @@ public interface PaymentDao extends JpaRepository<PaymentEntity, Long> {
     @Query("SELECT COALESCE(SUM(p.pmtAmount), 0)\n" +
             "    FROM PaymentEntity p\n" +
             "    WHERE p.rsv.id = :reservationId\n" +
-            "      AND p.pmts.pmtsName = 'PAID'\n")
+            "      AND p.pmts.pmtsName = 'Paid" +
+            "'\n")
     BigDecimal getPaidAmountReservation(@Param("reservationId") Long reservationId);
+
+    @Query("""
+           SELECT COALESCE(SUM(p.pmtAmount), 0)
+           FROM PaymentEntity p
+           JOIN p.pmts s
+           WHERE s.pmtsName = 'PAID'
+             AND p.pmtDate >= :startOfDay
+             AND p.pmtDate < :endOfDay
+           """)
+    BigDecimal findPaidRevenueForToday(
+            @Param("startOfDay") LocalDateTime startOfDay,
+            @Param("endOfDay") LocalDateTime endOfDay
+    );
 }

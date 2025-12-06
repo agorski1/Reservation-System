@@ -94,25 +94,22 @@ public class RoomService {
         return reservationMapper.toRoomReservationDtos(reservations);
     }
 
-    public RoomDto updateRoomStatus(Long roomId, String newStatus) {
+    public void updateRoomStatus(Long roomId, String newStatus) {
         RoomEntity room = roomDao.findFirstById(roomId)
                 .orElseThrow(() -> new IllegalArgumentException("Can't find room with id " + roomId));
 
         room.setRmStatus(newStatus);
-
-        RoomEntity updatedRoom = roomDao.save(room);
-        return roomMapper.toRoomDto(updatedRoom);
+        roomDao.save(room);
     }
 
 
-    public RoomDto updateRoomPricePerNight(Long roomId, BigDecimal newPrice) {
+    public void updateRoomPricePerNight(Long roomId, BigDecimal newPrice) {
         RoomEntity room = roomDao.findFirstById(roomId)
                 .orElseThrow(() -> new IllegalArgumentException("Can't find room with id " + roomId));
 
         room.getRt().setRtPricePerNight(newPrice);
 
-        RoomEntity updatedRoom = roomDao.save(room);
-        return roomMapper.toRoomDto(updatedRoom);
+        roomDao.save(room);
     }
 
     private boolean isRoomFullyOccupied(List<RoomSlotDto> slots, LocalDateTime from, LocalDateTime to) {

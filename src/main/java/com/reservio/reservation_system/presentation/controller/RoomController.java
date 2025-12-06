@@ -5,11 +5,13 @@ import com.reservio.reservation_system.presentation.dto.reservation.RoomReservat
 import com.reservio.reservation_system.presentation.dto.room.RoomDetailsDto;
 import com.reservio.reservation_system.presentation.dto.room.AvailableRoomDto;
 import com.reservio.reservation_system.presentation.dto.room.RoomDto;
+import com.reservio.reservation_system.presentation.dto.room.UpdateRoomStatusDto;
 import lombok.AllArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -52,14 +54,21 @@ public class RoomController {
         return ResponseEntity.ok(availableRooms);
     }
 
-//    @GetMapping("/{deskId}/reservations")
-//    public ResponseEntity<List<RoomReservationDto>> getDesksAvailability(
-//            @PathVariable Long deskId,
-//            @RequestParam("from") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime from,
-//            @RequestParam("to") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime to) {
-//
-//        List<RoomReservationDto> reservation = roomService.getRoomReservations(deskId, from, to);
-//
-//        return ResponseEntity.ok(reservation);
-//    }
+    @PostMapping("/{id}/status")
+    public ResponseEntity<Void> updateRoomStatus(
+            @PathVariable Long id,
+            @RequestBody UpdateRoomStatusDto dto
+    ) {
+        roomService.updateRoomStatus(id, dto.getStatus());
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{id}/price")
+    public ResponseEntity<Void> updateRoomPrice(
+            @PathVariable Long id,
+            @RequestBody BigDecimal newPrice
+    ) {
+        roomService.updateRoomPricePerNight(id, newPrice);
+        return ResponseEntity.noContent().build();
+    }
 }

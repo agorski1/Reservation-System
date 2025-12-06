@@ -11,7 +11,6 @@ import java.time.LocalDate;
 @Setter
 @AllArgsConstructor
 public class PaymentReportDto {
-    private String roomNumber;
     private BigDecimal totalRevenue; // suma wszystkich platnosci
     private long paymentCount; // liczba dokonanych platnosci
     private BigDecimal averagePaymentAmount; // totalRevenue/paymentCount
