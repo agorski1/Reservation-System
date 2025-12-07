@@ -62,13 +62,13 @@ public class ReservationService {
                 .orElseThrow(() -> new IllegalArgumentException("Reservation not found with ID " + reservationId));
 
         if (!reservation.getUsr().getId().equals(userId)) {
-          throw new SecurityException("You are not allowed to cancel this reservation");
+            throw new SecurityException("You are not allowed to cancel this reservation");
         }
 
         String currentStatus = reservation.getRsvs().getRsvsName();
         List<String> cancellableStatuses = List.of("Pending", "Partial-Paid", "Paid");
 
-        if(!cancellableStatuses.contains(currentStatus)) {
+        if (!cancellableStatuses.contains(currentStatus)) {
             throw new SecurityException("You are not allowed to cancel this reservation");
         }
 
@@ -210,5 +210,31 @@ public class ReservationService {
                 ));
 
         return reservationMapper.toUserReservationDto(entity);
+    }
+
+    @Transactional
+    public void updateReservationStatus(Long reservationId, String newStatus) {
+
+        System.out.println("Backend received updateReservationStatus request: reservationId="
+                + reservationId + ", newStatus=" + newStatus);
+
+        ReservationEntity reservation = reservationDao.findById(reservationId)
+                .orElseThrow(() -> new IllegalArgumentException("Reservation not found"));
+
+        ReservationStatusEntity current = reservation.getRsvs();
+
+        if (current.getRsvsName().equals(newStatus)) {
+            return;
+        }
+
+        if ("Cancelled".equals(current.getRsvsName())) {
+            throw new IllegalStateException("Cannot change status of a cancelled reservation.");
+        }
+
+        ReservationStatusEntity newStatusEntity = reservationStatusDao.findByRsvsName(newStatus)
+                .orElseThrow(() -> new IllegalArgumentException("Status not found"));
+
+        reservation.setRsvs(newStatusEntity);
+        reservationDao.save(reservation);
     }
 }

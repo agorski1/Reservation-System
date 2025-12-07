@@ -53,6 +53,15 @@ public class ReservationController {
         return ResponseEntity.ok().build();
     }
 
+    @PostMapping("/{reservationId}/status")
+    public ResponseEntity<Void> updateReservationStatus(
+            @PathVariable Long reservationId,
+            @RequestBody UpdateStatusRequestDto request) {
+
+        reservationService.updateReservationStatus(reservationId, request.getStatus());
+        return ResponseEntity.ok().build();
+    }
+
     @PostMapping()
     public ResponseEntity<RoomReservationResponseDto> reserveRoom(@Valid @RequestBody RoomReservationRequestDto dto, Principal principal) {
 
