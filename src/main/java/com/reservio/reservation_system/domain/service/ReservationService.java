@@ -153,8 +153,9 @@ public class ReservationService {
                     newUser.setUsrFirstName(firstName);
                     newUser.setUsrLastName(lastName);
                     newUser.setUsrPhoneNumber(phoneNumber);
+                    newUser.setUsrPassword("CHANGE_ME_" + email.hashCode());
 
-                    UserRoleEntity role = userRoleDao.findByUrName("UNREGISTERED")
+                    UserRoleEntity role = userRoleDao.findByUrName("Unregistered")
                             .orElseThrow(() -> new IllegalArgumentException("Role 'UNREGISTERED' not found"));
                     newUser.setUr(role);
                     return userDao.save(newUser);
@@ -163,7 +164,7 @@ public class ReservationService {
         RoomEntity room = roomDao.findById(roomId)
                 .orElseThrow(() -> new IllegalArgumentException("Room not found"));
 
-        ReservationStatusEntity status = reservationStatusDao.findByRsvsName("CONFIRMED")
+        ReservationStatusEntity status = reservationStatusDao.findByRsvsName("Confirmed")
                 .orElseThrow(() -> new IllegalArgumentException("Reservation status not found"));
 
         ReservationEntity reservation = new ReservationEntity();
@@ -236,5 +237,12 @@ public class ReservationService {
 
         reservation.setRsvs(newStatusEntity);
         reservationDao.save(reservation);
+    }
+
+    public ReservationDto getReservationById(long id) {
+        ReservationEntity entity = reservationDao.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Reservation not found"));
+
+        return reservationMapper.toReservationDto(entity);
     }
 }

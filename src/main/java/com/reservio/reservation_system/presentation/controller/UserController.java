@@ -21,12 +21,32 @@ public class UserController {
         return ResponseEntity.ok(employees);
     }
 
-    @PatchMapping("/{userId}/password")
-    public ResponseEntity<String> changeUserPasswordByAdmin(
-            @PathVariable Long userId,
-            @RequestBody AdminPasswordChangeDto dto
-    ) {
-        userService.changeUserPasswordByAdmin(userId, dto.getNewPassword());
+    @PostMapping("/password/change")
+    public ResponseEntity<String> changeUserPasswordByAdmin(@RequestBody AdminPasswordChangeDto dto) {
+        userService.changeUserPasswordByAdmin(dto.getUserId(), dto.getNewPassword());
         return ResponseEntity.ok("Password changed successfully by admin");
     }
+
+    @PostMapping("/update")
+    public ResponseEntity<String> updateUserByAdmin(@RequestBody EmployeeDto updateDto) {
+
+        if (updateDto.getId() == null) {
+            return ResponseEntity.badRequest().body("User ID is required");
+        }
+
+        userService.updateUserByAdmin(updateDto.getId(), updateDto);
+        return ResponseEntity.ok("User updated successfully");
+    }
+
+    @PostMapping("/create/employee")
+    public ResponseEntity<String> createUserByAdmin(@RequestBody EmployeeDto createDto) {
+        if (createDto.getEmail() == null || createDto.getEmail().isBlank()) {
+            return ResponseEntity.badRequest().body("Email is required for new user");
+        }
+
+        userService.createUserByAdmin(createDto);
+        return ResponseEntity.ok("User created successfully");
+    }
+
+
 }

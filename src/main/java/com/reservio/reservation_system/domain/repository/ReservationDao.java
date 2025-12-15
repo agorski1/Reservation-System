@@ -48,12 +48,12 @@ public interface ReservationDao extends JpaRepository<ReservationEntity, Long> {
     @Query("SELECT r FROM ReservationEntity r " +
             "JOIN r.payments p " +
             "JOIN p.pmts s " +
-            "WHERE r.rsvCheckOutDate > :startDate " +
-            "AND r.rsvCheckInDate < :endDate " +
+            "WHERE r.rsvCheckOutDate > :startDateTime " +
+            "AND r.rsvCheckInDate < :endDateTime " +
             "AND s.pmtsName = 'PAID'")
     List<ReservationEntity> findReservaitonsWithApprovedPaymentsInPeriod(
-            @Param("startDate") LocalDate startDate,
-            @Param("endDate") LocalDate endDate
+            @Param("startDateTime") LocalDateTime startDateTime,
+            @Param("endDateTime") LocalDateTime endDateTime
     );
 
     @Query("""

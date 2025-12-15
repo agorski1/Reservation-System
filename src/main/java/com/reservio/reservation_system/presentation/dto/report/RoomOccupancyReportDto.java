@@ -12,11 +12,15 @@ import java.time.LocalDate;
 @Getter
 @Setter
 public class RoomOccupancyReportDto {
-    private Short roomNumber;
-    private Integer occupiedDays;
-    private Integer totalDays;
-    private Float occupancyRate; // procent zajetosci
-
     private LocalDate startDate;
     private LocalDate endDate;
+    private Integer totalDays; // liczba dni raportu
+
+    private Short roomNumber;
+    private Short roomType;
+    private Long capacity;
+
+    private Integer reservationCount; // liczba pobytow
+    private Integer occupiedDays; // laczna liczba dni, kiedy pokoj byl zajety w danym okresie
+    private Float occupancyRate; // procent zajetosci
 }

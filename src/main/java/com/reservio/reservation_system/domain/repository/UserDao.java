@@ -13,7 +13,7 @@ public interface UserDao extends JpaRepository<UserEntity, Long> {
     Optional<UserEntity> findByUsrEmail(String email);
     boolean existsByUsrEmail(String email);
 
-    @Query("SELECT u FROM UserEntity u WHERE u.ur.urName = 'EMPLOYEE'")
+    @Query("SELECT u FROM UserEntity u WHERE u.ur.urName = 'Employee'")
     List<UserEntity> findAllEmployees();
 
 }

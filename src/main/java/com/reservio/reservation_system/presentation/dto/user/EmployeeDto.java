@@ -14,4 +14,6 @@ public class EmployeeDto {
     private String email;
     private String phoneNumber;
     private String city;
+    private String zipCode;
+    private String street;
 }

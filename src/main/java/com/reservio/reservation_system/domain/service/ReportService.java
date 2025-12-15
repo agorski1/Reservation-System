@@ -20,6 +20,7 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @AllArgsConstructor
@@ -33,62 +34,87 @@ public class ReportService {
     @Transactional
     public List<RoomOccupancyReportDto> calculateRoomOccupancy(LocalDateTime start, LocalDateTime end) {
 
+        LocalDate startDate = start.toLocalDate();
+        LocalDate endDate = end.toLocalDate();
+
+        int totalDays = (int) ChronoUnit.DAYS.between(startDate, endDate) + 1;
+
         List<RoomEntity> rooms = roomDao.findAll();
         List<ReservationEntity> reservations =
                 reservationDao.findAllByCheckInOutDates(start, end);
 
         List<RoomOccupancyReportDto> report = new ArrayList<>();
 
-        long totalDays = ChronoUnit.DAYS.between(start.toLocalDate(), end.toLocalDate());
-
         for (RoomEntity room : rooms) {
 
+            // Rezerwacje dla pokoju
             List<ReservationEntity> roomReservations = reservations.stream()
                     .filter(r -> r.getRm().getId().equals(room.getId()))
                     .toList();
 
+            int reservationCount = roomReservations.size();
+
+            // Liczenie zajętych dni
             int occupiedDays = roomReservations.stream()
-                    .mapToInt(r -> calculator.calculateOccupiedDays(r, start, end))
+                    .mapToInt(r -> calculator.calculateOccupiedDays(r, startDate, endDate))
                     .sum();
 
-            float occupancyRate = calculator.calculateOccupancyRate(occupiedDays, totalDays);
+            float occupancyRate = totalDays == 0
+                    ? 0f
+                    : (float) occupiedDays / totalDays;
 
-            report.add(new RoomOccupancyReportDto(
-                    room.getRmNumber(),
-                    occupiedDays,
-                    (int) totalDays,
-                    occupancyRate,
-                    start.toLocalDate(),
-                    end.toLocalDate()
-            ));
+            // Tworzenie DTO
+            RoomOccupancyReportDto dto = new RoomOccupancyReportDto();
+            dto.setStartDate(startDate);
+            dto.setEndDate(endDate);
+            dto.setTotalDays(totalDays);
+
+            dto.setRoomNumber(room.getRmNumber());
+            dto.setRoomType(room.getRt().getId().shortValue());
+            dto.setCapacity(room.getRt().getRtCapacity());
+
+            dto.setReservationCount(reservationCount);
+            dto.setOccupiedDays(occupiedDays);
+            dto.setOccupancyRate(occupancyRate);
+
+            report.add(dto);
         }
 
         return report;
     }
 
-    public PaymentReportDto getPaymentReport(LocalDate startDate, LocalDate endDate) {
 
-        List<ReservationEntity> reservations =
-                reservationDao.findReservaitonsWithApprovedPaymentsInPeriod(startDate, endDate);
+    public PaymentReportDto getPaymentReport(LocalDateTime start, LocalDateTime end) {
 
-        List<PaymentEntity> paidPayments = reservations.stream()
-                .flatMap(r -> r.getPayments().stream())
-                .filter(p -> p.getPmts().getPmtsName().equalsIgnoreCase("PAID"))
-                .toList();
+        // Pobierz wszystkie płatności z datą w zakresie raportu i statusem PAID
+        List<PaymentEntity> paidPayments = paymentDao.findAllPaidPaymentsInPeriod(start, end);
+
+        int totalDays = (int) ChronoUnit.DAYS.between(start.toLocalDate(), end.toLocalDate()) + 1;
 
         BigDecimal totalRevenue = calculator.calculateTotalRevenue(paidPayments);
-        long count = calculator.calculatePaymentCount(paidPayments);
-        BigDecimal average = calculator.calculateAveragePayment(paidPayments);
-        String method = calculator.findMostUsedPaymentMethod(paidPayments);
+        long paymentCount = calculator.calculatePaymentCount(paidPayments);
+        BigDecimal avg = calculator.calculateAveragePayment(paidPayments);
+        BigDecimal maxPayment = calculator.findMaxPayment(paidPayments);
+        String mostUsed = calculator.findMostUsedPaymentMethod(paidPayments);
 
-        return new PaymentReportDto(
-                totalRevenue,
-                count,
-                average,
-                method,
-                startDate,
-                endDate
-        );
+        Map<String, BigDecimal> revenuePerMethod = calculator.revenuePerPaymentMethod(paidPayments);
+        Map<String, Long> countPerMethod = calculator.countPerPaymentMethod(paidPayments);
+        Map<LocalDate, BigDecimal> revenuePerDay = calculator.revenuePerDay(paidPayments);
+
+        PaymentReportDto dto = new PaymentReportDto();
+        dto.setStartDate(start.toLocalDate());
+        dto.setEndDate(end.toLocalDate());
+        dto.setTotalDays(totalDays);
+        dto.setTotalRevenue(totalRevenue);
+        dto.setPaymentCount(paymentCount);
+        dto.setAveragePaymentAmount(avg);
+        dto.setMaxPaymentAmount(maxPayment);
+        dto.setMostUsedPaymentMethod(mostUsed);
+        dto.setRevenuePerPaymentMethod(revenuePerMethod);
+        dto.setPaymentCountPerPaymentMethod(countPerMethod);
+        dto.setRevenuePerDay(revenuePerDay);
+
+        return dto;
     }
 
     public DashboardStatsDto getTodayDashboardStats() {

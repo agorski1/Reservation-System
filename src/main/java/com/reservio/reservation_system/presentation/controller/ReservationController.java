@@ -84,4 +84,14 @@ public class ReservationController {
         return ResponseEntity.ok().build();
     }
 
+    @GetMapping("/employee/{id}")
+    public ResponseEntity<ReservationDto> getReservationByIdForEmployee(@PathVariable Long id) {
+        ReservationDto reservation = reservationService.getReservationById(id);
+
+        if (reservation == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(reservation);
+    }
 }

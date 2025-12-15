@@ -3,6 +3,7 @@ package com.reservio.reservation_system.presentation.controller;
 import com.reservio.reservation_system.domain.service.RoomTypeService;
 import com.reservio.reservation_system.presentation.dto.room.AvailableRoomTypeDto;
 import com.reservio.reservation_system.presentation.dto.room.RoomTypeDto;
+import com.reservio.reservation_system.presentation.dto.room.UpdateRoomTypePriceDto;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -46,4 +47,11 @@ public class RoomTypeController {
         return ResponseEntity.ok(roomType);
     }
 
+    @PostMapping("/price")
+    public ResponseEntity<Void> updateRoomPrice(
+            @RequestBody UpdateRoomTypePriceDto dto
+    ) {
+        roomTypeService.updatePricePerNight(dto.getRoomTypeId(), dto.getPricePerNight());
+        return ResponseEntity.noContent().build();
+    }
 }

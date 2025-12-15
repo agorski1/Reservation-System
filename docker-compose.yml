@@ -11,7 +11,7 @@ services:
       ORACLE_CHARACTERSET: AL32UTF8
       ORACLE_PDB: XEPDB1
     volumes:
-      - oracle_data:/opt/oracle/oradata   # rs
+      - oracle_data:/opt/oracle/oradata
     networks:
       - network
 volumes:

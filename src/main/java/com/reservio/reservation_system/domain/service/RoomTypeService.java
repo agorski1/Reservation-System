@@ -77,6 +77,16 @@ public class RoomTypeService {
         log.info("Calculated total price for entityId={}: {}", entity.getId(), totalPrice);
         return totalPrice;
     }
+
+    public void updatePricePerNight(Long roomTypeId, BigDecimal newPrice) {
+        RoomTypeEntity roomType = roomTypeDao.findFirstById(roomTypeId);
+        if (roomType == null) {
+            throw new IllegalArgumentException("Room type not found: " + roomTypeId);
+        }
+
+        roomType.setRtPricePerNight(newPrice);
+        roomTypeDao.save(roomType);
+    }
 //    private BigDecimal calculateTotalPrice(RoomTypeEntity entity,
 //                                           LocalDate from,
 //                                           LocalDate to) {

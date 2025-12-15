@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -43,18 +43,56 @@ public class ReportCalculator {
                 .orElse("N/A");
     }
 
-    public static int calculateOccupiedDays(ReservationEntity reservation, LocalDateTime start, LocalDateTime end) {
-        LocalDateTime actualStart = reservation.getRsvCheckInDate().isBefore(start) ? start : reservation.getRsvCheckInDate();
-        LocalDateTime actualEnd = reservation.getRsvCheckOutDate().isAfter(end) ? end : reservation.getRsvCheckOutDate();
+    public static int calculateOccupiedDays(ReservationEntity reservation, LocalDate start, LocalDate end) {
 
-        if (!actualEnd.isAfter(actualStart)) return 0;
+        LocalDate resStart = reservation.getRsvCheckInDate().toLocalDate();
+        LocalDate resEnd = reservation.getRsvCheckOutDate().toLocalDate();
 
-        long seconds = ChronoUnit.SECONDS.between(actualStart, actualEnd);
-        return (int) Math.ceil(seconds / 86400.0);
+        if (resStart.isBefore(start)) {
+            resStart = start;
+        }
+
+        LocalDate reportEnd = end.plusDays(1);
+
+        if (resEnd.isAfter(reportEnd)) {
+            resEnd = reportEnd;
+        }
+
+        if (!resStart.isBefore(resEnd)) {
+            return 0;
+        }
+
+        return (int) ChronoUnit.DAYS.between(resStart, resEnd);
     }
 
-    public float calculateOccupancyRate(long occupiedDays, long totalDays) {
-        if (totalDays == 0) return 0f;
-        return (occupiedDays * 100f) / totalDays;
+    public BigDecimal findMaxPayment(List<PaymentEntity> payments) {
+        return payments.stream()
+                .map(PaymentEntity::getPmtAmount)
+                .max(BigDecimal::compareTo)
+                .orElse(BigDecimal.ZERO);
+    }
+
+    public Map<String, BigDecimal> revenuePerPaymentMethod(List<PaymentEntity> payments) {
+        return payments.stream()
+                .collect(Collectors.groupingBy(
+                        p -> p.getPmtm().getPmtmName(),
+                        Collectors.reducing(BigDecimal.ZERO, PaymentEntity::getPmtAmount, BigDecimal::add)
+                ));
+    }
+
+    public Map<String, Long> countPerPaymentMethod(List<PaymentEntity> payments) {
+        return payments.stream()
+                .collect(Collectors.groupingBy(
+                        p -> p.getPmtm().getPmtmName(),
+                        Collectors.counting()
+                ));
+    }
+
+    public Map<LocalDate, BigDecimal> revenuePerDay(List<PaymentEntity> payments) {
+        return payments.stream()
+                .collect(Collectors.groupingBy(
+                        p -> p.getPmtDate().toLocalDate(),
+                        Collectors.reducing(BigDecimal.ZERO, PaymentEntity::getPmtAmount, BigDecimal::add)
+                ));
     }
 }

@@ -2,6 +2,8 @@ package com.reservio.reservation_system.domain.service;
 
 import com.reservio.reservation_system.domain.repository.*;
 import com.reservio.reservation_system.infrastructure.entity.*;
+import com.reservio.reservation_system.presentation.dto.payment.PaymentDetailsDto;
+import com.reservio.reservation_system.presentation.dto.payment.PaymentEntryDto;
 import com.reservio.reservation_system.presentation.dto.payment.PaymentResponseDto;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
@@ -10,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -102,5 +105,45 @@ public class PaymentService {
         if (totalPaid.compareTo(BigDecimal.ZERO) == 0) return "Pending";
         if (totalPaid.compareTo(totalPrice) < 0) return "Partial-Paid";
         return "Paid";
+    }
+
+    @Transactional
+    public PaymentDetailsDto getPaymentsForReservation(Long reservationId) {
+        ReservationEntity reservation = reservationDao.findById(reservationId)
+                .orElseThrow(() -> new IllegalArgumentException("Reservation not found"));
+
+        List<PaymentEntity> payments = paymentDao.findByRsvId(reservationId);
+
+        BigDecimal totalPaid = payments.stream()
+                .filter(p -> "PAID".equals(p.getPmts().getPmtsName()))
+                .map(PaymentEntity::getPmtAmount)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        long days = ChronoUnit.DAYS.between(
+                reservation.getRsvCheckInDate().toLocalDate(),
+                reservation.getRsvCheckOutDate().toLocalDate()
+        );
+        BigDecimal totalPrice = reservation.getRm().getRt().getRtPricePerNight()
+                .multiply(BigDecimal.valueOf(days));
+
+        BigDecimal remainingAmount = totalPrice.subtract(totalPaid);
+        if (remainingAmount.compareTo(BigDecimal.ZERO) < 0) remainingAmount = BigDecimal.ZERO;
+
+        PaymentResponseDto summary = new PaymentResponseDto(
+                reservationId,
+                totalPaid.floatValue(),
+                remainingAmount.floatValue()
+        );
+
+        List<PaymentEntryDto> entries = payments.stream()
+                .map(p -> new PaymentEntryDto(
+                        p.getPmtAmount().floatValue(),
+                        p.getPmtDate(),
+                        p.getPmtm().getPmtmName(),
+                        p.getPmts().getPmtsName()
+                ))
+                .toList();
+
+        return new PaymentDetailsDto(summary, entries);
     }
 }

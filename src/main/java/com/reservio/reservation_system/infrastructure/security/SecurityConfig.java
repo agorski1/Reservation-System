@@ -41,19 +41,35 @@ public class SecurityConfig {
                         .hasRole("Customer")
 
                         .requestMatchers("/hd/reservations/my/current", "/hd/rooms/available")
-                        .hasRole("Customer")
+                        .hasAnyRole("Customer", "Employee")
 
-                        .requestMatchers(HttpMethod.GET, "/hd/reservations/*").hasRole("Customer")
+                        .requestMatchers(HttpMethod.GET, "/hd/reservations/*").hasAnyRole("Customer", "Admin")
 
-                        .requestMatchers(HttpMethod.GET, "/hd/dashboard/today").hasRole("Employee")
+                        .requestMatchers(HttpMethod.GET, "/hd/dashboard/today").hasAnyRole("Employee", "Admin")
 
-                        .requestMatchers(HttpMethod.GET, "/hd/rooms").hasRole("Employee")
+                        .requestMatchers(HttpMethod.GET, "/hd/rooms").hasAnyRole("Employee", "Admin")
 
-                        .requestMatchers(HttpMethod.POST, "/hd/rooms/*/status").hasRole("Employee")
+                        .requestMatchers(HttpMethod.POST, "/hd/rooms/*/status").hasAnyRole("Employee", "Admin")
 
-//                        .requestMatchers(HttpMethod.POST, "/hd/rooms/*/price").hasRole("Admin")
+                        .requestMatchers(HttpMethod.POST, "/hd/room-type/price").hasRole("Admin")
 
-                        .requestMatchers(HttpMethod.GET, "/hd/reservations").hasRole("Employee")
+                        .requestMatchers(HttpMethod.POST, "/hd/users/update").hasRole("Admin")
+
+                        .requestMatchers(HttpMethod.POST, "/hd/users/employees").hasRole("Admin")
+
+                        .requestMatchers(HttpMethod.POST, "/hd/users/password/change").hasRole("Admin")
+
+                        .requestMatchers(HttpMethod.POST, "/hd/users/create/employee").hasRole("Admin")
+
+                        .requestMatchers(HttpMethod.GET, "/hd/reservations").hasAnyRole("Employee", "Admin")
+
+                        .requestMatchers(HttpMethod.GET, "/hd/payments/*").hasAnyRole("Employee", "Admin")
+
+                        .requestMatchers(HttpMethod.GET, "/hd/reservations/employee/*").hasAnyRole("Employee", "Admin")
+
+                        .requestMatchers(HttpMethod.POST, "/hd/reservations/manual").hasAnyRole("Employee", "Admin")
+
+                        .requestMatchers(HttpMethod.GET, "/hd/payments/").hasAnyRole("Employee", "Admin")
 
                         .anyRequest().authenticated()
                 )

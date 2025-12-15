@@ -102,16 +102,6 @@ public class RoomService {
         roomDao.save(room);
     }
 
-
-    public void updateRoomPricePerNight(Long roomId, BigDecimal newPrice) {
-        RoomEntity room = roomDao.findFirstById(roomId)
-                .orElseThrow(() -> new IllegalArgumentException("Can't find room with id " + roomId));
-
-        room.getRt().setRtPricePerNight(newPrice);
-
-        roomDao.save(room);
-    }
-
     private boolean isRoomFullyOccupied(List<RoomSlotDto> slots, LocalDateTime from, LocalDateTime to) {
         slots.sort(Comparator.comparing(RoomSlotDto::getStart));
 
