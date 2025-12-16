@@ -11,7 +11,9 @@ import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @Service
@@ -21,6 +23,9 @@ public class ReservationService {
     private final RoomDao roomDao;
     private final UserDao userDao;
     private final UserRoleDao userRoleDao;
+    private final PaymentMethodDao paymentMethodDao;
+    private final PaymentStatusDao paymentStatusDao;
+    private final PaymentDao paymentDao;
 
     private final ReservationMapper reservationMapper;
     private final ReservationStatusDao reservationStatusDao;
@@ -145,7 +150,6 @@ public class ReservationService {
             LocalDateTime checkInDate,
             LocalDateTime checkOutDate
     ) {
-
         UserEntity user = userDao.findByUsrEmail(email)
                 .orElseGet(() -> {
                     UserEntity newUser = new UserEntity();
@@ -154,7 +158,6 @@ public class ReservationService {
                     newUser.setUsrLastName(lastName);
                     newUser.setUsrPhoneNumber(phoneNumber);
                     newUser.setUsrPassword("CHANGE_ME_" + email.hashCode());
-
                     UserRoleEntity role = userRoleDao.findByUrName("Unregistered")
                             .orElseThrow(() -> new IllegalArgumentException("Role 'UNREGISTERED' not found"));
                     newUser.setUr(role);
@@ -164,8 +167,8 @@ public class ReservationService {
         RoomEntity room = roomDao.findById(roomId)
                 .orElseThrow(() -> new IllegalArgumentException("Room not found"));
 
-        ReservationStatusEntity status = reservationStatusDao.findByRsvsName("Confirmed")
-                .orElseThrow(() -> new IllegalArgumentException("Reservation status not found"));
+        ReservationStatusEntity statusConfirmed = reservationStatusDao.findByRsvsName("Confirmed")
+                .orElseThrow(() -> new IllegalArgumentException("Reservation status 'Confirmed' not found"));
 
         ReservationEntity reservation = new ReservationEntity();
         reservation.setUsr(user);
@@ -173,8 +176,42 @@ public class ReservationService {
         reservation.setRsvGuestCount(guestCount);
         reservation.setRsvCheckInDate(checkInDate);
         reservation.setRsvCheckOutDate(checkOutDate);
-        reservation.setRsvs(status);
+        reservation.setRsvs(statusConfirmed);
 
+        // Zapisujemy rezerwację, żeby miała ID
+        reservation = reservationDao.save(reservation);
+
+        // Obliczamy całkowitą cenę (tak samo jak w PaymentService)
+        long days = ChronoUnit.DAYS.between(
+                checkInDate.toLocalDate(),
+                checkOutDate.toLocalDate()
+        );
+        if (days <= 0) {
+            throw new IllegalArgumentException("Check-out date must be after check-in date");
+        }
+        BigDecimal totalPrice = room.getRt().getRtPricePerNight()
+                .multiply(BigDecimal.valueOf(days));
+
+        // Tworzymy płatność na pełną kwotę metodą "Cash"
+        PaymentEntity payment = new PaymentEntity();
+        payment.setRsv(reservation);
+        payment.setPmtAmount(totalPrice);
+        payment.setPmtDate(LocalDateTime.now());
+
+        PaymentStatusEntity statusPaid = paymentStatusDao.findByPmtsName("PAID")
+                .orElseThrow(() -> new IllegalArgumentException("Payment status 'PAID' not found"));
+        payment.setPmts(statusPaid);
+
+        PaymentMethodEntity methodCash = paymentMethodDao.findByPmtmName("CASH")  // <-- zmień na dokładną nazwę, np. "Gotówka"
+                .orElseThrow(() -> new IllegalArgumentException("Payment method 'Cash' not found"));
+        payment.setPmtm(methodCash);
+
+        paymentDao.save(payment);
+
+        // Aktualizujemy status rezerwacji na "Paid" (bo zapłacono całą kwotę)
+        ReservationStatusEntity statusFullyPaid = reservationStatusDao.findByRsvsName("Paid")
+                .orElseThrow(() -> new IllegalArgumentException("Reservation status 'Paid' not found"));
+        reservation.setRsvs(statusFullyPaid);
         reservationDao.save(reservation);
     }
 

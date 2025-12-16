@@ -17,7 +17,7 @@ public class RoomOccupancyReportDto {
     private Integer totalDays; // liczba dni raportu
 
     private Short roomNumber;
-    private Short roomType;
+    private String roomType;
     private Long capacity;
 
     private Integer reservationCount; // liczba pobytow

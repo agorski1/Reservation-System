@@ -70,7 +70,7 @@ public class ReportService {
             dto.setTotalDays(totalDays);
 
             dto.setRoomNumber(room.getRmNumber());
-            dto.setRoomType(room.getRt().getId().shortValue());
+            dto.setRoomType(room.getRt().getRtName());
             dto.setCapacity(room.getRt().getRtCapacity());
 
             dto.setReservationCount(reservationCount);
