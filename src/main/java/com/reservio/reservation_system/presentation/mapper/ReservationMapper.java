@@ -13,19 +13,22 @@ import java.math.BigDecimal;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
-@Mapper(componentModel = "spring", uses = UserMapper.class)
-public interface ReservationMapper {
+@Mapper(componentModel = "spring", uses = UserMapper.class) public interface ReservationMapper {
     @Mapping(source = "id", target = "reservationId")
     @Mapping(source = "rm.rmNumber", target = "roomNumber")
     @Mapping(source = "rsvCheckInDate", target = "from")
     @Mapping(source = "rsvCheckOutDate", target = "to")
     @Mapping(source = "rsvs.rsvsName", target = "status")
-    @Mapping(target = "totalPrice", expression = "java(calculateTotalPrice(entity))")
-    @Mapping(target = "paidAmount", expression = "java(calculatePaidAmount(entity))")
-    @Mapping(target = "remainingAmount", expression = "java(calculateRemaining(entity))")
+    @Mapping(target = "totalPrice",
+            expression = "java(calculateTotalPrice(entity))")
+    @Mapping(target = "paidAmount",
+            expression = "java(calculatePaidAmount(entity))")
+    @Mapping(target = "remainingAmount",
+            expression = "java(calculateRemaining(entity))")
     UserReservationDto toUserReservationDto(ReservationEntity entity);
 
-    List<UserReservationDto> toUserReservationDtos(List<ReservationEntity> entities);
+    List<UserReservationDto> toUserReservationDtos(
+            List<ReservationEntity> entities);
 
     @Mapping(source = "id", target = "reservationId")
     @Mapping(source = "rsvCheckInDate", target = "from")
@@ -33,7 +36,8 @@ public interface ReservationMapper {
     @Mapping(source = "usr", target = "user")
     RoomReservationDto toRoomReservationDto(ReservationEntity entity);
 
-    List<RoomReservationDto> toRoomReservationDtos(List<ReservationEntity> entities);
+    List<RoomReservationDto> toRoomReservationDtos(
+            List<ReservationEntity> entities);
 
     @Mapping(source = "id", target = "id")
     @Mapping(source = "usr.usrFirstName", target = "firstName")
@@ -47,7 +51,8 @@ public interface ReservationMapper {
     @Mapping(source = "rsvCheckOutDate", target = "checkOutDate")
     ReservationDto toReservationDto(ReservationEntity entity);
 
-    List<ReservationDto> toReservationDtos(List<ReservationEntity> entities);
+    List<ReservationDto> toReservationDtos(
+            List<ReservationEntity> entities);
 
     @Mapping(source = "id", target = "id")
     @Mapping(source = "rm.id", target = "roomId")
@@ -55,15 +60,16 @@ public interface ReservationMapper {
     @Mapping(source = "rsvCheckInDate", target = "from")
     @Mapping(source = "rsvCheckOutDate", target = "to")
     @Mapping(source = "rsvs.rsvsName", target = "status")
-    RoomReservationResponseDto toRoomReservationResponseDto(ReservationEntity entity);
+    RoomReservationResponseDto toRoomReservationResponseDto(
+            ReservationEntity entity);
 
     default BigDecimal calculateTotalPrice(ReservationEntity r) {
         if (r == null || r.getRm() == null || r.getRm().getRt() == null) {
             return BigDecimal.ZERO;
         }
         long days = ChronoUnit.DAYS.between(
-            r.getRsvCheckInDate().toLocalDate(),
-            r.getRsvCheckOutDate().toLocalDate()
+                r.getRsvCheckInDate().toLocalDate(),
+                r.getRsvCheckOutDate().toLocalDate()
         );
         return r.getRm().getRt().getRtPricePerNight()
                 .multiply(BigDecimal.valueOf(days));
@@ -74,7 +80,8 @@ public interface ReservationMapper {
             return BigDecimal.ZERO;
         }
         return r.getPayments().stream()
-                .filter(p -> p.getPmts() != null && "PAID".equals(p.getPmts().getPmtsName()))
+                .filter(p -> p.getPmts() != null
+                        && "PAID".equals(p.getPmts().getPmtsName()))
                 .map(PaymentEntity::getPmtAmount)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }

@@ -21,17 +21,26 @@ public class AuthController {
     private final RegistrationManager registrationManager;
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponseDto> login(@Valid @RequestBody LoginRequestDto dto) {
-        String token = userAuthenticator.authenticate(dto.getEmail(), dto.getPassword());
-
+    public ResponseEntity<LoginResponseDto> login(
+            @Valid @RequestBody LoginRequestDto dto
+    ) {
+        String token = userAuthenticator.authenticate(
+                dto.getEmail(),
+                dto.getPassword()
+        );
         return ResponseEntity.ok(new LoginResponseDto(token));
     }
 
     @PostMapping("/register")
-    public ResponseEntity<Void> register(@Valid @RequestBody RegisterRequestDto dto) {
-        Long id = registrationManager.registerUser(dto.getEmail(), dto.getPassword());
-
+    public ResponseEntity<Void> register(
+            @Valid @RequestBody RegisterRequestDto dto
+    ) {
+        Long id = registrationManager.registerUser(
+                dto.getFirstName(),
+                dto.getLastName(),
+                dto.getEmail(),
+                dto.getPhoneNumber(),
+                dto.getPassword());
         return ResponseEntity.ok().build();
     }
-
 }

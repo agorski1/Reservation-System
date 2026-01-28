@@ -16,10 +16,10 @@ public class UserAuthenticator {
 
     public String authenticate(String email, String password) {
         UserEntity user = userDao.findByUsrEmail(email)
-                .orElseThrow(() ->new InvalidCredentialsException("Invalid email or password"));
+                .orElseThrow(() ->new InvalidCredentialsException("Nieprawidłowy e-mail lub hasło"));
 
         if (!passwordEncoder.matches(password, user.getUsrPassword())) {
-            throw new InvalidCredentialsException("Invalid email or password");
+            throw new InvalidCredentialsException("Nieprawidłowy e-mail lub hasło");
         }
 
         String roleName = user.getUr().getUrName();

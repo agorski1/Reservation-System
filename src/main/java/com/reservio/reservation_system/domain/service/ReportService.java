@@ -47,14 +47,12 @@ public class ReportService {
 
         for (RoomEntity room : rooms) {
 
-            // Rezerwacje dla pokoju
             List<ReservationEntity> roomReservations = reservations.stream()
                     .filter(r -> r.getRm().getId().equals(room.getId()))
                     .toList();
 
             int reservationCount = roomReservations.size();
 
-            // Liczenie zajętych dni
             int occupiedDays = roomReservations.stream()
                     .mapToInt(r -> calculator.calculateOccupiedDays(r, startDate, endDate))
                     .sum();
@@ -63,7 +61,6 @@ public class ReportService {
                     ? 0f
                     : (float) occupiedDays / totalDays;
 
-            // Tworzenie DTO
             RoomOccupancyReportDto dto = new RoomOccupancyReportDto();
             dto.setStartDate(startDate);
             dto.setEndDate(endDate);
@@ -86,7 +83,6 @@ public class ReportService {
 
     public PaymentReportDto getPaymentReport(LocalDateTime start, LocalDateTime end) {
 
-        // Pobierz wszystkie płatności z datą w zakresie raportu i statusem PAID
         List<PaymentEntity> paidPayments = paymentDao.findAllPaidPaymentsInPeriod(start, end);
 
         int totalDays = (int) ChronoUnit.DAYS.between(start.toLocalDate(), end.toLocalDate()) + 1;

@@ -18,8 +18,13 @@ import java.util.Set;
 @Table(name = "RESERVATIONS")
 public class ReservationEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "RESERVATIONS_id_gen")
-    @SequenceGenerator(name = "RESERVATIONS_id_gen", sequenceName = "RESERVATION_SEQ", allocationSize = 1)
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "RESERVATIONS_id_gen")
+    @SequenceGenerator(
+            name = "RESERVATIONS_id_gen",
+            sequenceName = "RESERVATION_SEQ",
+            allocationSize = 1)
     @Column(name = "RSV_ID", nullable = false)
     private Long id;
 
@@ -52,7 +57,7 @@ public class ReservationEntity {
     @JoinColumn(name = "RSVS_ID", nullable = false)
     private ReservationStatusEntity rsvs;
 
-    @Column(name = "RSV_CREATED_AT", nullable = false, updatable = false)
+    @Column(name = "RSV_CREATED_AT", nullable = false,
+            updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
-
 }

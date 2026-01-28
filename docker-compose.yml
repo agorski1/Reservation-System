@@ -1,22 +1,24 @@
+version: '3.8'
+
 services:
-  oracle:
-    build: ./oracle
-    image: container-registry.oracle.com/database/express:21.3.0-xe
-    container_name: oracle-xe-new
+  oracle-test:
+    build: ./Oracle
+    container_name: oracle-xe-test
     ports:
       - "1521:1521"
       - "5500:5500"
     environment:
       ORACLE_PWD: password123
       ORACLE_CHARACTERSET: AL32UTF8
-      ORACLE_PDB: XEPDB1
     volumes:
       - oracle_data:/opt/oracle/oradata
+      - ./src/main/resources/db:/opt/oracle/scripts/startup
+    shm_size: 2g
     networks:
       - network
+
 volumes:
   oracle_data:
-    external: true
 
 networks:
   network:
