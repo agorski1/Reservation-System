@@ -101,20 +101,6 @@ public class ReservationService {
         return reservationMapper.toUserReservationDtos(reservations);
     }
 
-//    public boolean isDeskAvailable(Long deskId, LocalDateTime from, LocalDateTime to) {
-//        if (from.isBefore(LocalDateTime.now()) || to.isBefore(LocalDateTime.now())) {
-//            throw new ReservationException("Rezerwacja nie może być w przeszłości");
-//        }
-//
-//        if (!from.isBefore(to)) {
-//            throw new ReservationException("'from' musi być przed 'to'");
-//        }
-//
-//        boolean existsOverlap = reservationDao.existsOverlappingReservation(deskId, from, to);
-//        return !existsOverlap;
-//    }
-
-
     private Long getUserIdByUserEmail(String userEmail) {
         UserEntity user = userDao.findByUsrEmail(userEmail)
                 .orElseThrow(() -> new RuntimeException("User not found with email: " + userEmail));
@@ -178,10 +164,8 @@ public class ReservationService {
         reservation.setRsvCheckOutDate(checkOutDate);
         reservation.setRsvs(statusConfirmed);
 
-        // Zapisujemy rezerwację, żeby miała ID
         reservation = reservationDao.save(reservation);
 
-        // Obliczamy całkowitą cenę (tak samo jak w PaymentService)
         long days = ChronoUnit.DAYS.between(
                 checkInDate.toLocalDate(),
                 checkOutDate.toLocalDate()
@@ -192,7 +176,6 @@ public class ReservationService {
         BigDecimal totalPrice = room.getRt().getRtPricePerNight()
                 .multiply(BigDecimal.valueOf(days));
 
-        // Tworzymy płatność na pełną kwotę metodą "Cash"
         PaymentEntity payment = new PaymentEntity();
         payment.setRsv(reservation);
         payment.setPmtAmount(totalPrice);
@@ -202,13 +185,12 @@ public class ReservationService {
                 .orElseThrow(() -> new IllegalArgumentException("Payment status 'PAID' not found"));
         payment.setPmts(statusPaid);
 
-        PaymentMethodEntity methodCash = paymentMethodDao.findByPmtmName("CASH")  // <-- zmień na dokładną nazwę, np. "Gotówka"
+        PaymentMethodEntity methodCash = paymentMethodDao.findByPmtmName("CASH")
                 .orElseThrow(() -> new IllegalArgumentException("Payment method 'Cash' not found"));
         payment.setPmtm(methodCash);
 
         paymentDao.save(payment);
 
-        // Aktualizujemy status rezerwacji na "Paid" (bo zapłacono całą kwotę)
         ReservationStatusEntity statusFullyPaid = reservationStatusDao.findByRsvsName("Paid")
                 .orElseThrow(() -> new IllegalArgumentException("Reservation status 'Paid' not found"));
         reservation.setRsvs(statusFullyPaid);

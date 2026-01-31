@@ -28,7 +28,6 @@ public class ReportController {
         return reportService.getPaymentReport(start, end);
     }
 
-    // RAPORT OBŁOŻENIA
     @GetMapping("/occupancy")
     public List<RoomOccupancyReportDto> getRoomOccupancy(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime start,

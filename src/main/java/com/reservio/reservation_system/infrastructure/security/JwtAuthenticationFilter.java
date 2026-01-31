@@ -36,7 +36,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                         null, Collections.singleton(new SimpleGrantedAuthority("ROLE_" + role)));
                 SecurityContextHolder.getContext().setAuthentication(authToken);
 
-                // Debug roli
                 System.out.println("JwtAuthenticationFilter -> authorities: " + authToken.getAuthorities());
             }
         }

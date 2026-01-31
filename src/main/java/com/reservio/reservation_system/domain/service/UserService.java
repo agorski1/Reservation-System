@@ -1,6 +1,5 @@
 package com.reservio.reservation_system.domain.service;
 
-import com.reservio.reservation_system.domain.model.User;
 import com.reservio.reservation_system.domain.repository.UserDao;
 import com.reservio.reservation_system.domain.repository.UserRoleDao;
 import com.reservio.reservation_system.infrastructure.entity.UserEntity;
@@ -11,7 +10,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @Service

@@ -87,14 +87,5 @@ public class RoomTypeService {
         roomType.setRtPricePerNight(newPrice);
         roomTypeDao.save(roomType);
     }
-//    private BigDecimal calculateTotalPrice(RoomTypeEntity entity,
-//                                           LocalDate from,
-//                                           LocalDate to) {
-//        if (entity.getRtPricePerNight() == null || from == null || to == null) {
-//            return BigDecimal.ZERO;
-//        }
-//        long days = ChronoUnit.DAYS.between(from, to);
-//        return entity.getRtPricePerNight().multiply(BigDecimal.valueOf(days));
-//    }
 }
 

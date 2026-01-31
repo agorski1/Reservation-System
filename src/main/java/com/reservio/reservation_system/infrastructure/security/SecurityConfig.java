@@ -15,11 +15,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import java.util.List;
 
 @Configuration
-@EnableMethodSecurity
-public class SecurityConfig {
-    @Bean
-    public BCryptPasswordEncoder bCryptPasswordEncoder() {
-        return new BCryptPasswordEncoder();
+@EnableMethodSecurity public class SecurityConfig { @Bean public BCryptPasswordEncoder bCryptPasswordEncoder() { return new BCryptPasswordEncoder();
     }
 
     @Bean

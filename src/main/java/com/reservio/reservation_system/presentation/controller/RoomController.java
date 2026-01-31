@@ -31,14 +31,6 @@ public class RoomController {
         return ResponseEntity.ok(currentReservations);
     }
 
-//    @GetMapping("/availability")
-//    public ResponseEntity<List<RoomDetailsDto>> getDesksAvailability(
-//            @RequestParam("from") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime from,
-//            @RequestParam("to") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime to) {
-//        List<RoomDetailsDto> availability = roomService.getRoomsAvailability(from, to);
-//        return ResponseEntity.ok(availability);
-//    }
-
     @GetMapping("/available")
     public ResponseEntity<List<AvailableRoomDto>> getRooms(
             @RequestParam Long roomTypeId,
