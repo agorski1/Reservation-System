@@ -13,7 +13,7 @@ The system consists of three main parts:
 ### 🔗 Related Repositories
 
 * 🌐 Web (React) – *customer-facing application*  
-  👉 [React Repo](https://github.com/agorski1/Reservation-System-Web)
+  👉 [Reservation System Web](https://github.com/agorski1/Reservation-System-Web)
 
 * 🖥 Desktop (JavaFX) – *employee management system*  
   👉 [Reservation System Desktop](https://github.com/agorski1/Reservation-System-Desktop)
